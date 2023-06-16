@@ -47,6 +47,7 @@ const infinityScroll = () => {
             let url = window.location.href.split("#");
             switch (url[1]) {
                 case "/trending":
+                    loadTrendingShows(true);
                     break;
                 case "/hot":   
                     loadHotShows(true);
@@ -105,60 +106,41 @@ function formatRepoSelection (show) {
     if ( !show.id ) return show.text;
     if (!canRequest()) return show.text;
 
-    addShow(show.id);
-    
-    /*fetch(`https://api.themoviedb.org/3/tv/${show.id}?language=en-US`, tmdb_options)
-    .then(response => response.json())
-    .then(response => {
-        createCard(response);
-    })*/
+    if ( addShow(show.id) ) {
+        fetch(`https://api.themoviedb.org/3/tv/${show.id}?language=en-US`, tmdb_options)
+        .then(response => response.json())
+        .then(response => {
+            
+            $(".hero-container").prepend(createCard(response, false, true));
+        })
+    }
 }
 
-/*
-async function loadShowsfromDB1(display = true){
-    if (display == true)  $(".hero-container").html(copy_loader.html());
-
-    const response = await fetch(local_api_path + "?method=read");
-    database = await response.json();
-    
-      // Check if the response was successful.
-        if (response.status === 200) {
-            if (display == true) {
-                $(".hero-container").html("");
-                displayShows(database);
-            }
-            // Return the response data.
-        return database;
-        } else {
-            // Throw an error.
-            throw new Error(`Request failed with status code ${response.status}`);
-        }
-}*/
-
 async function loadShowsfromDB(display = true){
-    if (display == true)  $(".hero-container").html(copy_loader.html());
     let temp_db = window.localStorage.getItem(storage_name);
-    if (temp_db === null) {
-        database = new Object();
-    } else {
-        database = JSON.parse(temp_db);
-    }
+    (temp_db === null) ? database = new Object() : database = JSON.parse(temp_db);
 
-
-    if (display == true) displayShows(database), $(".hero-container").html("");
+    if (display == true) $(".hero-container").html(copy_loader.html()), displayShows(database), $(".hero-container").html("");
 
     return database
 }
 
-function loadTrendingShows(){
-    $(".hero-container").html(copy_loader.html());
+async function loadTrendingShows(reload = false){
+    if (!reload)  $(".hero-container").html(copy_loader.html());
     //fetch('https://api.themoviedb.org/3/tv/popular?language=en-US&page=1', tmdb_options)
-    fetch('https://api.themoviedb.org/3/trending/tv/week?language=en-US', tmdb_options)
+    fetch(`https://api.themoviedb.org/3/trending/tv/week?language=en-US&page=${page}`, tmdb_options)
     .then(response => response.json())
-    .then(response => {
-        $(".hero-container").html("");
+    .then(async response => {
+        database = await loadShowsfromDB(false);
+
+        const arr = Array();
+        Object.values(database).forEach(el => {
+            arr.push(el);
+        })
+        
+        if (!reload) $(".hero-container").html(""), $(window).scroll(infinityScroll);
         response.results.forEach(val => {
-            createCard(val, true);
+            if ( !arr.includes(String(val.id))) createCard(val, true);
         })
     });
 }
@@ -183,7 +165,6 @@ async function loadHotShows(reload = false){
         response.results.forEach(val => {
             if ( !arr.includes(String(val.id))) createCard(val, true, false);
         })
-        
     });
 }
 
@@ -221,10 +202,10 @@ const displayShows = async (data) => {
     //$("#database_json").html(JSON.stringify(data, undefined, 2))
 }
 
-function createCard(data, add = false){
+function createCard(data, add = false, ret = false){
     //if (!data.next_episode_to_air) return null;
 
-    console.log(data);
+    //console.log(data);
 
     let nc = copy_container.clone();
     $(nc).removeClass("d-none");
@@ -262,7 +243,9 @@ function createCard(data, add = false){
     $('.ticket__movie-title', nc).html(data.name);
     $('.ticket__movie-date', nc).html(getYearFromDate(data.first_air_date));
     (data.number_of_seasons) ? $('.ticket__movie-completed', nc).html(`<strong>${data.number_of_seasons}</strong> Seasons`) : $('.ticket__movie-completed', nc).remove(); 
-    
+
+    if (ret == true) return nc;
+
     $(".hero-container").append(nc);
     $(nc).show();
 
@@ -299,6 +282,11 @@ const removeShow1 = (id) => {
 }
 
 const removeShow = (id) => {
+    iziToast.danger({
+        title: 'Showly',
+        message: `Removed show ${id} from database`
+    });
+
     console.log("Remove show: ", id);
 
     Object.keys(database).forEach(el => {
@@ -321,12 +309,26 @@ const addShow = (id) => {
         if (id == Number(database[el])) exists = true;
     });
     
+    let url = window.location.href.split("#");
+    if ( !url[1] == undefined || !url[1] == "") $(`#show-${id}`).remove();
+
     if ( !exists ) {
         database[Number(q) + 1] = String(id);
         window.localStorage.setItem(storage_name, JSON.stringify(database));
 
-        $(`#show-${id}`).remove();
+        iziToast.success({
+            title: 'Showly',
+            message: `Added show ${id} to database`
+        });
+
+        return true;
     }
+
+    iziToast.warning({
+        title: 'Showly',
+        message: `Show ${id} is already in the database`
+    });
+    return false;
 }
 
 function activeMenu(url){
