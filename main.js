@@ -5,7 +5,7 @@ let image_path_500 = "https://image.tmdb.org/t/p/w500";
 let tmdb_options = {method: 'GET',headers: {accept: 'application/json', Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiMTdiOTBhNTE4N2I2ZGQyMDYwNDA2YTk0YmUzY2Y0MSIsInN1YiI6IjY0ODdiODI1ZTI3MjYwMDBjOTMxZDQ2NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.E-YGCzw4sOaRfJM-sM40r88ZFZbrelCImRqdDsmtttU'}};
 
 let storage_name = "showly_database";
-let database = null;
+let database = Object();
 let page = 1;
 let cardNum = 1;
 let tmdb_header = tmdb_options.headers;
@@ -137,9 +137,13 @@ async function loadShowsfromDB1(display = true){
 
 async function loadShowsfromDB(display = true){
     if (display == true)  $(".hero-container").html(copy_loader.html());
-    temp_db = window.localStorage.getItem(storage_name);
+    let temp_db = window.localStorage.getItem(storage_name);
+    if (temp_db === null) {
+        database = new Object();
+    } else {
+        database = JSON.parse(temp_db);
+    }
 
-    database = JSON.parse(temp_db);
 
     if (display == true) displayShows(database), $(".hero-container").html("");
 
