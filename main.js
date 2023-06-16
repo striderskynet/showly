@@ -251,7 +251,6 @@ function createCard(data, add = false, ret = false){
     cardNum++;
 }
 
-
 function daysDiff(endDate, rText = true){
     const date1 = new Date();
     
@@ -358,6 +357,11 @@ $( document ).ready(function(){
 });
 
 window.addEventListener('hashchange', function(e){
+    if (e.newURL.includes("modal")) {
+        e.preventDefault(); 
+        return false;
+    }
+
     page = 1;
     cardNum = 1;
     $(window).off("scroll", infinityScroll);
@@ -397,4 +401,9 @@ $(window).scroll(function () {
 
 $("#scroll-top-button").click(function(){
     $(window).scrollTop(0);
+});
+
+$("#about_modal_link").on("click", function(){
+    console.log("asd");
+        $("#about_modal").modal("show");
 });

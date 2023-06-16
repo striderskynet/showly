@@ -93,8 +93,7 @@ ul.select2-results__options li:hover{
 }
 
 footer {
-    position:sticky;
-    bottom: -1px;
+    bottom: -2px;
     z-index: 1006;
 }
 /* Breadcrumbs Styles */
@@ -119,7 +118,7 @@ footer {
 	margin: auto;
     cursor: pointer;
     text-align: center;
-    height: 100%;
+    min-height: 84.5vh;
 }
 
 .hero-container.blocks {
