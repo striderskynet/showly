@@ -15,7 +15,7 @@ let container_height= Number(getComputedStyle(document.documentElement).getPrope
 let requestTimer = true;
 
 let copy_container = $("#default_container").clone();
-let copy_loader = $("#default_loading").clone();
+let copy_loader = $("#default_loader").clone();
 $("#default_container").remove();
 $("#default_loader").remove();
 $("#load-more-btn").remove();
@@ -137,11 +137,13 @@ async function loadTrendingShows(reload = false){
         Object.values(database).forEach(el => {
             arr.push(el);
         })
-        
+
         if (!reload) $(".hero-container").html(""), $(window).scroll(infinityScroll);
         response.results.forEach(val => {
             if ( !arr.includes(String(val.id))) createCard(val, true);
         })
+
+        
     });
 }
 
@@ -149,9 +151,6 @@ async function loadHotShows(reload = false){
     if (!reload)  $(".hero-container").html(copy_loader.html());
     $("#load-more-btn").remove();
     fetch(`https://api.themoviedb.org/3/discover/tv?first_air_date.gte=2023&include_adult=false&include_null_first_air_dates=false&language=en-US&page=${page}&sort_by=popularity.desc&with_origin_country=US&with_original_language=en`, tmdb_options)
-    //fetch(`https://api.themoviedb.org/3/discover/tv?first_air_date_year=2023&include_adult=false&include_null_first_air_dates=false&language=en-US&page=${page}&sort_by=popularity.desc&with_original_language=en`, tmdb_options)
-    //fetch(`https://api.themoviedb.org/3/tv/popular?language=en-US&page=${page}`, tmdb_options)
-    //fetch('https://api.themoviedb.org/3/trending/tv/week?language=en-US', tmdb_options)
     .then(response => response.json())
     .then(async response => {
         database = await loadShowsfromDB(false);
@@ -165,6 +164,7 @@ async function loadHotShows(reload = false){
         response.results.forEach(val => {
             if ( !arr.includes(String(val.id))) createCard(val, true, false);
         })
+
     });
 }
 
@@ -187,7 +187,6 @@ const displayShows = async (data) => {
     })
 
     Promise.all(fetches).then(function() {
-
         showlist.sort((a, b) => {
             return a.next_date - b.next_date;
         });
@@ -196,10 +195,7 @@ const displayShows = async (data) => {
         showlist.forEach(function (el) {
             createCard(el);
         })
-        
     });
-    
-    //$("#database_json").html(JSON.stringify(data, undefined, 2))
 }
 
 function createCard(data, add = false, ret = false){
@@ -229,6 +225,12 @@ function createCard(data, add = false, ret = false){
         $('.ticket__movie-episodedata', nc).html(data.first_air_date);
         $('.ticket__movie-next', nc).html(data.vote_average);
     } else {
+
+        $('.hero-container.blocks .watchlist-ribbon').hover(
+            function (){ $('.watchlist-ribbon__bg').css("fill", "red")}, 
+            function() { $('.watchlist-ribbon__bg').css("fill", "rgba(255,255,255,0.3)")
+        })
+
         $('.watchlist-ribbon__icon>i').removeClass().addClass("bi bi-dash-circle-fill");
         $('.watchlist-ribbon', nc).attr("onclick", `removeShow(${data.id})`);
         
@@ -282,7 +284,7 @@ const removeShow1 = (id) => {
 }
 
 const removeShow = (id) => {
-    iziToast.danger({
+    iziToast.warning({
         title: 'Showly',
         message: `Removed show ${id} from database`
     });
@@ -359,6 +361,7 @@ window.addEventListener('hashchange', function(e){
     page = 1;
     cardNum = 1;
     $(window).off("scroll", infinityScroll);
+    loadShowsfromDB(false);
 
     let url = e.newURL.split("#");
     if (url[1] == "") loadShowsfromDB();

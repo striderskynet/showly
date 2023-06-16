@@ -81,6 +81,7 @@ ul.select2-results__options li:hover{
 
 #top-bar-nav {
     transition: all 1s ease-in-out;
+    z-index: 99;
 }
 
 .nav-item .active{
@@ -153,6 +154,7 @@ ul.select2-results__options li:hover{
 
 .hero-container.blocks .main-container:hover {
     transform: scale(1.05);
+    z-index: 5;
     border: 3px solid var(--bs-yellow);
 }
 
@@ -182,7 +184,7 @@ ul.select2-results__options li:hover{
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
     color: #fff;
-    z-index: 1005;
+    z-index: 4;
 }
 
 .hero-container.blocks .main-container .ticket__movie-next,
@@ -222,7 +224,7 @@ ul.select2-results__options li:hover{
     margin-left: 50px;
     transition:opacity 0.3s ease-in-out;
     opacity: 0;
-    z-index: 1006;
+    z-index: 6;
 }
 
 .hero-container.blocks .watchlist-ribbon .watchlist-ribbon__icon{
@@ -238,7 +240,7 @@ ul.select2-results__options li:hover{
 }
 
 .hero-container.blocks .watchlist-ribbon:hover .watchlist-ribbon__bg{
-    fill: var(--bs-primary)
+    fill: var(--bs-primary);
 }
 
 .hero-container.blocks .main-container:hover .watchlist-ribbon{
