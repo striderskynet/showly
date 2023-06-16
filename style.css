@@ -1,0 +1,252 @@
+
+:root {
+    --cardWidth: 250px;
+    --cardHeight: 450px;
+    --cardMargin: 2px;
+}
+
+
+* {
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+	font-family: "Roboto", sans-serif;
+	height: 100vh;
+}
+
+#scroll-top-button{
+display: none; /* Hidden by default */
+  position: fixed; /* Fixed/sticky position */
+  bottom: 20px; /* Place the button at the bottom of the page */
+  right: 30px; /* Place the button 30px from the right */
+  z-index: 99; /* Make sure it does not overlap */
+
+}
+
+/* Select Styles */
+
+.select2-results__options{
+    max-height: 400px !important;
+}
+.select2-result-tv.logo>img{
+    height: 60px;
+    border-radius: 5px;
+}
+
+.select2-result-tv.logo {
+    margin-left: 10px;
+}
+.select2-result-tv.network {
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.select2-result-tv.id{
+    font-size: 10px;
+    display: block;
+}
+
+.select2-result-tv.show_name{
+
+    font-size: 20px;
+    font-weight: bold;
+    display: block;
+}
+
+.select2-result-tv-data div {
+    display: inline-block;
+}
+
+.select2-result-shows{
+
+    width: 100%;
+}
+
+ul.select2-results__options li:nth-child(even){
+	background-color: var(--bs-gray-200);
+	color: black;
+}
+ul.select2-results__options li:hover{
+	background-color: var(--bs-secondary) !important;
+	color: white;
+}
+
+/* Navbar Styles */
+
+#top-bar-nav {
+    transition: all 1s ease-in-out;
+}
+
+.nav-item .active{
+    font-weight:900;
+}
+
+.navbar-nav a {
+    color: #fff !important;
+}
+
+/* Breadcrumbs Styles */
+
+.breadcrumb-nav {
+    height: 40px;
+}
+
+.breadcrumb h2  {
+    font-size: 20px;
+    font-weight: bolder;
+    color: #fff;
+    cursor: pointer;
+}
+
+.breadcrumb i:hover {
+    color: var(--bs-primary);
+}
+
+
+.hero-container.blocks, .hero-container.rows {
+	margin: auto;
+    cursor: pointer;
+    text-align: center;
+}
+
+.hero-container.blocks {
+    display: flex;
+    justify-content:center;
+    flex-wrap: wrap;
+    background: #bbb;
+}
+
+/* Cards Blocks Styles */
+
+.hero-container.blocks .main-container {
+    width: var(--cardWidth);
+    height: var(--cardHeight);
+    margin: var(--cardMargin);
+    /*border-top-left-radius: 20px;
+    border-top-right-radius: 20px;*/
+    overflow:hidden;
+    background: #000;
+    box-sizing: border-box;
+    transition: all .2s ease-in-out;
+    color: #fff;
+    position: relative;
+    text-align: center;
+}
+
+.hero-container.blocks .poster-container {
+    overflow: hidden;
+}
+
+.hero-container.blocks .poster-container img {
+    height: calc( var(--cardHeight) - 75px);
+    overflow: hidden;
+    width: 100%;
+    object-fit:cover;
+    object-position: top;
+}
+
+.hero-container.blocks .main-container:hover {
+    transform: scale(1.05);
+    border: 3px solid var(--bs-yellow);
+}
+
+.hero-container.blocks .main-container:active {
+    transform: scale(0.9);
+}
+
+.hero-container.blocks .ticket__movie-completed {
+    position:absolute;
+    right: 0px;
+    padding: 5px 10px;
+    background: #fff;
+    color: #000;
+    border-bottom-left-radius: 5px;
+}
+.hero-container.blocks .ticket__movie-overview {
+    position:absolute;
+    opacity: 0;
+    text-align: justify;
+    padding: 80px 20px 0px 20px;
+    background: rgba(0,0,0,0.8);
+    transition: opacity 0.5s ease-in-out;
+    font-size: 1em;
+    width: var(--cardWidth);
+    height: var(--cardHeight);
+    overflow: hidden;              /* "overflow" value must be different from  visible"*/ 
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    color: #fff;
+    z-index: 1005;
+}
+
+.hero-container.blocks .main-container .ticket__movie-next,
+.hero-container.blocks .main-container .ticket__movie-episodedata{
+    padding: 2px 10px 2px 5px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background: #fff;
+}
+
+.hero-container.blocks .main-container .ticket__movie-next{
+    margin-top: 50px;
+}
+.hero-container.blocks .main-container .ticket__movie-episodedata{
+    margin-top: 80px;
+}
+
+.hero-container.blocks .main-container .ticket__movie-date, 
+.hero-container.blocks .main-container .ticket__movie-network{
+    font-weight: bolder;
+    padding: 2px 15px 2px 5px;
+    color: #fff;
+    display: inline-block;
+    padding: 5px;
+}
+
+.hero-container.blocks .main-container .ticket__movie-date{
+    right: 0px;
+}
+
+.hero-container.blocks .main-container .ticket__movie-network{
+    left: 0px;
+}
+
+.hero-container.blocks .watchlist-ribbon{
+    position: absolute;
+    margin-left: 50px;
+    transition:opacity 0.3s ease-in-out;
+    opacity: 0;
+    z-index: 1006;
+}
+
+.hero-container.blocks .watchlist-ribbon .watchlist-ribbon__icon{
+    width: 50px;
+    text-align: center;
+    margin-top: -43px;
+}
+
+.hero-container.blocks .watchlist-ribbon .watchlist-ribbon__bg{
+    width: 40px;
+    transition: all 0.3s ease-in-out;
+    fill: rgba(255,255,255,0.3);
+}
+
+.hero-container.blocks .watchlist-ribbon:hover .watchlist-ribbon__bg{
+    fill: var(--bs-primary)
+}
+
+.hero-container.blocks .main-container:hover .watchlist-ribbon{
+    opacity: 1;
+}
+
+.hero-container.blocks .main-container:hover .ticket__movie-overview  {
+    opacity: 1;
+}
+
+/* Cards Rows Styles */
