@@ -23,7 +23,7 @@ body {
 #scroll-top-button{
 display: none; /* Hidden by default */
   position: fixed; /* Fixed/sticky position */
-  bottom: 20px; /* Place the button at the bottom of the page */
+  bottom: 60px; /* Place the button at the bottom of the page */
   right: 30px; /* Place the button 30px from the right */
   z-index: 99; /* Make sure it does not overlap */
 
@@ -92,6 +92,11 @@ ul.select2-results__options li:hover{
     color: #fff !important;
 }
 
+footer {
+    position:sticky;
+    bottom: -1px;
+    z-index: 1006;
+}
 /* Breadcrumbs Styles */
 
 .breadcrumb-nav {
@@ -114,6 +119,7 @@ ul.select2-results__options li:hover{
 	margin: auto;
     cursor: pointer;
     text-align: center;
+    height: 100%;
 }
 
 .hero-container.blocks {
@@ -155,7 +161,7 @@ ul.select2-results__options li:hover{
 .hero-container.blocks .main-container:hover {
     transform: scale(1.05);
     z-index: 5;
-    border: 3px solid var(--bs-yellow);
+    border: 3px solid var(--bs-primary);
 }
 
 .hero-container.blocks .main-container:active {

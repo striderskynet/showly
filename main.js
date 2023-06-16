@@ -199,9 +199,6 @@ const displayShows = async (data) => {
 }
 
 function createCard(data, add = false, ret = false){
-    //if (!data.next_episode_to_air) return null;
-
-    //console.log(data);
 
     let nc = copy_container.clone();
     $(nc).removeClass("d-none");
@@ -264,11 +261,11 @@ function daysDiff(endDate, rText = true){
     //console.log(date3);
     //if (date3 == -1) date3 = 0;
     if (!rText) return date3;
-    if (date3 < -1) return `Hace ${date3} dias`;
-    if (date3 == -1) return `Ayer`;
-    if (date3 == 0) return `Hoy`;
-    if (date3 == 1) return `Manana`;
-    if (date3 > 1) return `Dentro de ${date3} dias`;
+    if (date3 < -1) return `${date3} days ago`;
+    if (date3 == -1) return `Yesterday`;
+    if (date3 == 0) return `Today`;
+    if (date3 == 1) return `Tomorrow`;
+    if (date3 > 1) return `In ${date3} days`;
 
     //return date2.dayOfYear() - date1.dayOfYear();
 }
@@ -350,9 +347,12 @@ $( document ).ready(function(){
     loadShowsfromDB(false);
     let url = window.location.href.split("#");
 
-    if ( url[1] == undefined || url[1] == "") loadShowsfromDB();
-    if ( url[1] == "/trending") loadTrendingShows();
-    if ( url[1] == "/hot") loadHotShows();
+    switch(url[1]) {
+        case "": case undefined: default:
+            loadShowsfromDB(); url[1] = ""; break;
+        case "/trending": loadTrendingShows(); break;
+        case "/hot": loadHotShows(); break;
+    }
 
     activeMenu(url[1]);
 });
@@ -364,9 +364,13 @@ window.addEventListener('hashchange', function(e){
     loadShowsfromDB(false);
 
     let url = e.newURL.split("#");
-    if (url[1] == "") loadShowsfromDB();
-    if (url[1] == "/trending") loadTrendingShows();
-    if (url[1] == "/hot") loadHotShows();
+
+    switch(url[1]) {
+        case "": default:
+            loadShowsfromDB(); break;
+        case "/trending": loadTrendingShows(); break;
+        case "/hot": loadHotShows(); break;
+    }
 
     activeMenu(url[1]);
 });
