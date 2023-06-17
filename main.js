@@ -79,7 +79,7 @@ ajax: {
         },
         cache: true
     },
-    width: "500px",
+    //width: "80vw",
 
     placeholder: 'Search for a show',
     minimumInputLength: 1,
@@ -215,9 +215,10 @@ function createCard(data, add = false, ret = false){
     $(nc).attr("id", "show-" + data.id);
 
     if (cardNum % 10 == 0 ) {
-        $(nc).css("width", ( container_width * 3 ) + "px");
-        $('.ticket__movie-overview', nc).css("width", ( container_width * 3 ) + "px");
-        $('.ticket__movie-overview', nc).css("height", ( container_height * 1 ) + "px");
+        //console.log();
+        $(nc).css("width", ( $(".main-container").width() * 3 ) + "px");
+       // $('.ticket__movie-overview', nc).css("width", ( container_width * 3 ) + "px");
+       // $('.ticket__movie-overview', nc).css("height", ( container_height * 1 ) + "px");
         (data.backdrop_path) ? $('img', nc).attr("src", image_path_500 + data.backdrop_path) : $('img', nc).attr("src", "./assets/images/default_poster.png");
     } else {
         (data.poster_path) ? $('img', nc).attr("src", image_path + data.poster_path) : $('img', nc).attr("src", "./assets/images/default_poster.png");
