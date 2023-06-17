@@ -16,6 +16,7 @@ let requestTimer = true;
 
 let copy_container = $("#default_container").clone();
 let copy_loader = $("#default_loader").clone();
+
 $("#default_container").remove();
 $("#default_loader").remove();
 $("#load-more-btn").remove();
@@ -114,6 +115,14 @@ function formatRepoSelection (show) {
             $(".hero-container").prepend(createCard(response, false, true));
         })
     }
+}
+
+const objectCount = (obj) => {
+    let count = 0;
+    Object.keys(obj).forEach(el => {
+        count++;
+    });
+    return count;
 }
 
 async function loadShowsfromDB(display = true){
@@ -348,7 +357,18 @@ $( document ).ready(function(){
 
     switch(url[1]) {
         case "": case undefined: default:
-            loadShowsfromDB(); url[1] = ""; break;
+            loadShowsfromDB(); url[1] = "";
+            if (objectCount(database) == 0) {
+                iziToast.info({
+                    title: 'Showly',
+                    message: `You currently have no shows, add shows in the search bar or in the trending/hot categories`,
+                    position: `topCenter`,
+                    transitionIn: `fadeInDown`, 
+                    timeout: 15000,
+                    displayMode: 2
+                });
+            }
+            break;
         case "/trending": loadTrendingShows(); break;
         case "/hot": loadHotShows(); break;
     }
@@ -371,7 +391,18 @@ window.addEventListener('hashchange', function(e){
 
     switch(url[1]) {
         case "": default:
-            loadShowsfromDB(); break;
+            loadShowsfromDB(); 
+            if (objectCount(database) == 0) {
+                iziToast.info({
+                    title: 'Showly',
+                    message: `You currently have no shows, add shows in the search bar or in the trending/hot categories`,
+                    position: `topCenter`,
+                    transitionIn: `fadeInDown`, 
+                    timeout: 15000, 
+                    displayMode: 2
+                });
+            }
+            break;
         case "/trending": loadTrendingShows(); break;
         case "/hot": loadHotShows(); break;
     }
