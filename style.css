@@ -1,8 +1,8 @@
 
 :root {
-    --cardWidth: 250px;
-    --cardHeight: 450px;
-    --cardMargin: 2px;
+    --cardWidth: 200px;
+    --cardHeight: calc( var(--cardWidth) * 1.75 );
+    --cardMargin: 5px;
 }
 
 
@@ -94,7 +94,7 @@ ul.select2-results__options li:hover{
 
 footer {
     bottom: -2px;
-    z-index: 1006;
+    z-index: 99;
 }
 /* Breadcrumbs Styles */
 
@@ -126,16 +126,18 @@ footer {
     justify-content:center;
     flex-wrap: wrap;
     background: #bbb;
+    width: 100%;
+    height: 100%;
 }
 
 /* Cards Blocks Styles */
 
 .hero-container.blocks .main-container {
+    
+ 
     width: var(--cardWidth);
     height: var(--cardHeight);
     margin: var(--cardMargin);
-    /*border-top-left-radius: 20px;
-    border-top-right-radius: 20px;*/
     overflow:hidden;
     background: #000;
     box-sizing: border-box;
@@ -150,9 +152,9 @@ footer {
 }
 
 .hero-container.blocks .poster-container img {
-    height: calc( var(--cardHeight) - 75px);
+
+    height: calc( var(--cardHeight) * 1 );
     overflow: hidden;
-    width: 100%;
     object-fit:cover;
     object-position: top;
 }
@@ -179,7 +181,7 @@ footer {
     position:absolute;
     opacity: 0;
     text-align: justify;
-    padding: 80px 20px 0px 20px;
+    padding: 50px 20px 40px 20px;
     background: rgba(0,0,0,0.8);
     transition: opacity 0.5s ease-in-out;
     font-size: 1em;
@@ -207,13 +209,25 @@ footer {
     margin-top: 80px;
 }
 
+.hero-container.blocks .main-container .ticket__movie-title{
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    text-align: center;
+    z-index: 5;
+} 
+
+
 .hero-container.blocks .main-container .ticket__movie-date, 
 .hero-container.blocks .main-container .ticket__movie-network{
     font-weight: bolder;
     padding: 2px 15px 2px 5px;
-    color: #fff;
+    color: #000;
     display: inline-block;
     padding: 5px;
+    position: absolute;
+    bottom: 50px;
+    background: #fff;
 }
 
 .hero-container.blocks .main-container .ticket__movie-date{

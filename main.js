@@ -229,7 +229,8 @@ function createCard(data, add = false, ret = false){
         $('.ticket__movie-network', nc).remove();
         $('.ticket__movie-details', nc).html(data.overview);
         $('.ticket__movie-episodedata', nc).html(data.first_air_date);
-        $('.ticket__movie-next', nc).html(data.vote_average);
+        $('.ticket__movie-next', nc).html(`<i class="bi bi-star-fill"></i> ` + Math.round(data.vote_average * 10) / 10 );
+        
     } else {
 
         $('.hero-container.blocks .watchlist-ribbon').hover(
