@@ -156,10 +156,26 @@ async function loadTrendingShows(reload = false){
     });
 }
 
+function joinDate(t, a, s) {
+    function format(m) {
+        let f = new Intl.DateTimeFormat('en', m);
+        return f.format(t);
+
+    }
+
+    return a.map(format).join(s);
+}
+
 async function loadHotShows(reload = false){
     if (!reload)  $(".hero-container").html(copy_loader.html());
     $("#load-more-btn").remove();
-    fetch(`https://api.themoviedb.org/3/discover/tv?first_air_date.gte=2023&include_adult=false&include_null_first_air_dates=false&language=en-US&page=${page}&sort_by=popularity.desc&with_origin_country=US&with_original_language=en`, tmdb_options)
+
+    let weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+    let dateFormat = [{year: 'numeric'}, {month: '2-digit'}, {day: '2-digit'}];
+    weekAgo = joinDate(weekAgo, dateFormat, "-");
+    // = "2023-6-10";
+
+    fetch(`https://api.themoviedb.org/3/discover/tv?first_air_date.gte=${weekAgo}&include_adult=false&include_null_first_air_dates=false&language=en-US&page=${page}&sort_by=popularity.desc&with_origin_country=US&with_original_language=en`, tmdb_options)
     .then(response => response.json())
     .then(async response => {
         database = await loadShowsfromDB(false);
@@ -171,7 +187,8 @@ async function loadHotShows(reload = false){
 
         if (!reload) $(".hero-container").html(""), $(window).scroll(infinityScroll);
         response.results.forEach(val => {
-            if ( !arr.includes(String(val.id))) createCard(val, true, false);
+            //console.log("Show id: ", val.id, " poster_path: ", val.poster_path);
+            if ( !arr.includes(String(val.id)) && val.poster_path != null) createCard(val, true, false);
         })
 
     });
@@ -215,7 +232,6 @@ function createCard(data, add = false, ret = false){
     $(nc).attr("id", "show-" + data.id);
 
     if (cardNum % 10 == 0 ) {
-        //console.log();
         $(nc).css("width", ( $(".main-container").width() * 3 ) + "px");
        // $('.ticket__movie-overview', nc).css("width", ( container_width * 3 ) + "px");
        // $('.ticket__movie-overview', nc).css("height", ( container_height * 1 ) + "px");
@@ -233,11 +249,9 @@ function createCard(data, add = false, ret = false){
         $('.ticket__movie-next', nc).html(`<i class="bi bi-star-fill"></i> ` + Math.round(data.vote_average * 10) / 10 );
         
     } else {
-        console.log("asddasd");/*
-        $('.hero-container.blocks .watchlist-ribbon').hover( function(){
+        /*$('.hero-container.blocks .watchlist-ribbon').hover( function(){
             $('.watchlist-ribbon__bg').css("fill", "red")
-        })
-        */
+        })*/
         $('.watchlist-ribbon__icon > i', nc).removeClass();//.addClass("bi bi-dash-circle-fill");
         $('.watchlist-ribbon__icon > i', nc).addClass("bi bi-dash-circle-fill");
         $('.watchlist-ribbon', nc).attr("onclick", `removeShow(${data.id})`);
@@ -268,7 +282,6 @@ function daysDiff(endDate, rText = true){
     const date2 = new Date(endDate);
     let date3 = (date2.dayOfYear() - date1.dayOfYear()) + 1;
 
-    //console.log(date3);
     //if (date3 == -1) date3 = 0;
     if (!rText) return date3;
     if (date3 < -1) return `${date3} days ago`;
@@ -441,6 +454,5 @@ $("#scroll-top-button").click(function(){
 });
 
 $("#about_modal_link").on("click", function(){
-    console.log("asd");
         $("#about_modal").modal("show");
 });

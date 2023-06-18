@@ -104,6 +104,7 @@ body {
 
     .hero-container.blocks .poster-container img {
         height: calc( var(--cardHeight) * 1 );
+        width: 100%;
         overflow: hidden;
         object-fit:cover;
         object-position: top;
