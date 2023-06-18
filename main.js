@@ -65,57 +65,57 @@ Date.prototype.dayOfYear= function(){
 }
 
 $("#main_search").select2({
-ajax: {
-    url: "https://api.themoviedb.org/3/search/tv",
-    method: 'GET',
-    headers: {
-        accept: 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiMTdiOTBhNTE4N2I2ZGQyMDYwNDA2YTk0YmUzY2Y0MSIsInN1YiI6IjY0ODdiODI1ZTI3MjYwMDBjOTMxZDQ2NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.E-YGCzw4sOaRfJM-sM40r88ZFZbrelCImRqdDsmtttU'
-    },
-    dataType: 'json',
-    delay: 250,
-        data: function (params) {
-            return {query: params.term};
+    ajax: {
+        url: "https://api.themoviedb.org/3/search/tv",
+        method: 'GET',
+        headers: {
+            accept: 'application/json',
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiMTdiOTBhNTE4N2I2ZGQyMDYwNDA2YTk0YmUzY2Y0MSIsInN1YiI6IjY0ODdiODI1ZTI3MjYwMDBjOTMxZDQ2NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.E-YGCzw4sOaRfJM-sM40r88ZFZbrelCImRqdDsmtttU'
         },
-        cache: true
-    },
-    //width: "80vw",
-
-    placeholder: 'Search for a show',
-    minimumInputLength: 1,
-        templateResult: formatShow,
-        templateSelection: formatRepoSelection
-    });
-
+        dataType: 'json',
+        delay: 250,
+            data: function (params) {
+                return {query: params.term};
+            },
+            cache: true
+        },
+        //width: "80vw",
+    
+        placeholder: 'Search for a show',
+        minimumInputLength: 5,
+            templateResult: formatShow,
+            //templateSelection: formatRepoSelection,
+        });
+    
     function formatShow (show) {
-    if (show.loading) return show.text;
+        if (show.loading) return show.text;
+    
+        ( show.origin_country.length == 0) ? origin_country_div = "" : origin_country_div =  `<div class='select2-result-tv network'>(${show.origin_country})</div>`;
+        ( show.poster_path === undefined) ? poster_path_div = "" : poster_path_div =  `<div class='select2-result-tv logo col-md-auto'><img loading='lazy' src='${image_path }${show.poster_path}'/></div>`;
+    
+        var container = $(
+        "<div class='select2-result-shows row' onClick='select_show('>" + 
+            poster_path_div +  
+            `<div class='select2-result-tv-data col'><div class='select2-result-tv id'>${show.id}${origin_country_div}</div>` +
+            `<div class='select2-result-tv show_name'>${show.name} - (${getYearFromDate(show.first_air_date)})</div>` +
+        "</div></div>"
+        );
+    
+        return container;
+    }
 
-    ( show.origin_country.length == 0) ? origin_country_div = "" : origin_country_div =  `<div class='select2-result-tv network'>(${show.origin_country})</div>`;
-    ( show.poster_path === undefined) ? poster_path_div = "" : poster_path_div =  `<div class='select2-result-tv logo col-md-auto'><img loading='lazy' src='${image_path }${show.poster_path}'/></div>`;
-
-    var $container = $(
-    "<div class='select2-result-shows row'>" + 
-        poster_path_div +  
-        `<div class='select2-result-tv-data col'><div class='select2-result-tv id'>${show.id}${origin_country_div}</div>` +
-        `<div class='select2-result-tv show_name'>${show.name} - (${getYearFromDate(show.first_air_date)})</div>` +
-    "</div></div>"
-    );
-    return $container;
-}
-
-function formatRepoSelection (show) {
-    if ( !show.id ) return show.text;
-    if (!canRequest()) return show.text;
+$('#main_search').on("select2:select", function(e) {
+    $('#main_search').select2("val", "null");
+    let show = e.params.data;
 
     if ( addShow(show.id) ) {
         fetch(`https://api.themoviedb.org/3/tv/${show.id}?language=en-US`, tmdb_options)
         .then(response => response.json())
         .then(response => {
-            
             $(".hero-container").prepend(createCard(response, false, true));
         })
     }
-}
+});
 
 const objectCount = (obj) => {
     let count = 0;
@@ -225,7 +225,7 @@ function createCard(data, add = false, ret = false){
     }
     
     if (add) {
-        $('.watchlist-ribbon__icon>i').removeClass().addClass("bi bi-plus-circle-fill");
+        $('.watchlist-ribbon__icon > i').removeClass().addClass("bi bi-plus-circle-fill");
         $('.watchlist-ribbon', nc).attr("onclick", `addShow(${data.id})`);
         $('.ticket__movie-network', nc).remove();
         $('.ticket__movie-details', nc).html(data.overview);
@@ -233,13 +233,13 @@ function createCard(data, add = false, ret = false){
         $('.ticket__movie-next', nc).html(`<i class="bi bi-star-fill"></i> ` + Math.round(data.vote_average * 10) / 10 );
         
     } else {
-
-        $('.hero-container.blocks .watchlist-ribbon').hover(
-            function (){ $('.watchlist-ribbon__bg').css("fill", "red")}, 
-            function() { $('.watchlist-ribbon__bg').css("fill", "rgba(255,255,255,0.3)")
+        console.log("asddasd");/*
+        $('.hero-container.blocks .watchlist-ribbon').hover( function(){
+            $('.watchlist-ribbon__bg').css("fill", "red")
         })
-
-        $('.watchlist-ribbon__icon>i').removeClass().addClass("bi bi-dash-circle-fill");
+        */
+        $('.watchlist-ribbon__icon > i', nc).removeClass();//.addClass("bi bi-dash-circle-fill");
+        $('.watchlist-ribbon__icon > i', nc).addClass("bi bi-dash-circle-fill");
         $('.watchlist-ribbon', nc).attr("onclick", `removeShow(${data.id})`);
         
         if ( data.networks !== undefined ) $('.ticket__movie-network', nc).html(data.networks[0].name);
@@ -309,13 +309,16 @@ const removeShow = (id) => {
 }
 
 const addShow = (id) => {
-    console.log("Add show: ", id);
+    console.log("Add show: ", Number(id));
 
     let exists = false;
     let q = 0;
     Object.keys(database).forEach(el => {
         q = el;
-        if (id == Number(database[el])) exists = true;
+        if (id == Number(database[el])) {
+            exists = true;
+            console.log("Show ", Number(id), " already exist in the database: ", database);
+        }
     });
     
     let url = window.location.href.split("#");
@@ -355,6 +358,7 @@ function activeMenu(url){
 
 $( document ).ready(function(){
     loadShowsfromDB(false);
+    //
     let url = window.location.href.split("#");
 
     switch(url[1]) {
