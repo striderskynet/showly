@@ -77,7 +77,8 @@ body {
         text-align: center;
     }
     
-    .hero-container.blocks .watchlist-ribbon .watchlist-ribbon__bg{
+    .hero-container.blocks .watchlist-ribbon .watchlist-ribbon__bg,
+    .hero-container.blocks .watchlist-ribbon .watchlist-ribbon__bg-remove{
         display: none;
         transition: all 0.3s ease-in-out;
         fill: rgba(255,255,255,0.3);
@@ -116,19 +117,22 @@ body {
 
     .hero-container.blocks .watchlist-ribbon{
         position: absolute;
-        margin-left: 50px;
+        text-align: center;
+        right:0px;
         transition:opacity 0.3s ease-in-out;
         opacity: 0;
         z-index: 6;
     }
 
     .hero-container.blocks .watchlist-ribbon .watchlist-ribbon__icon{
-        width: 50px;
-        text-align: center;
-        margin-top: -43px;
+        position: absolute;
+        top: 0.25em;
+        right: 0.30em;
+        font-size: 25px;
     }
     
-    .hero-container.blocks .watchlist-ribbon .watchlist-ribbon__bg{
+    .hero-container.blocks .watchlist-ribbon .watchlist-ribbon__bg,
+    .hero-container.blocks .watchlist-ribbon .watchlist-ribbon__bg-remove{
         width: 40px;
         transition: all 0.3s ease-in-out;
         fill: rgba(255,255,255,0.3);
@@ -324,9 +328,8 @@ footer {
 .hero-container.blocks .main-container .ticket__movie-date, 
 .hero-container.blocks .main-container .ticket__movie-network{
     font-weight: bolder;
-    padding: 0px 15px 0px 5px;
+    padding: 0.5em 1em 0.5em 1em;
     color: #000;
-    padding: 5px;
     position: absolute;
     bottom: 1lh;
     background: #fff;
@@ -343,7 +346,11 @@ footer {
 
 
 .hero-container.blocks .watchlist-ribbon:hover .watchlist-ribbon__bg{
-    fill: var(--bs-primary);
+    fill: var(--bs-success);
+}
+
+.hero-container.blocks .watchlist-ribbon:hover .watchlist-ribbon__bg-remove{
+    fill: var(--bs-danger);
 }
 
 .hero-container.blocks .main-container:hover .watchlist-ribbon{

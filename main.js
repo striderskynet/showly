@@ -1,4 +1,3 @@
-
 let local_api_path = "http://home.local/proyects/tv/api"
 let image_path = "https://image.tmdb.org/t/p/w300_and_h450_bestv2";
 let image_path_500 = "https://image.tmdb.org/t/p/w500";
@@ -17,9 +16,28 @@ let requestTimer = true;
 let copy_container = $("#default_container").clone();
 let copy_loader = $("#default_loader").clone();
 
+let lg = "en";
+let lang = {
+    en: {
+        main_title: "Showly",
+        menu_myshows: "My shows", 
+        menu_trending: "Trending", 
+        menu_hot: "Hot & New", 
+
+        search_placeholder: "Search for a show",
+
+        show_addtitle: "Add show",
+        show_deltitle: "Remove show",
+        show_seasons: "Seasons",
+    }
+}
 $("#default_container").remove();
 $("#default_loader").remove();
 $("#load-more-btn").remove();
+
+const setPageTitle = (title_text) => {
+    document.title = `${lang[lg]["main_title"]} | ${title_text}`; 
+} 
 
 function canRequest(){
     if (requestTimer) {
@@ -81,7 +99,7 @@ $("#main_search").select2({
         },
         //width: "80vw",
     
-        placeholder: 'Search for a show',
+        placeholder: lang[lg]['search_placeholder'],
         minimumInputLength: 5,
             templateResult: formatShow,
             //templateSelection: formatRepoSelection,
@@ -218,43 +236,39 @@ const displayShows = async (data) => {
         });
 
         $(".hero-container").html("");
-        showlist.forEach(function (el) {
+        showlist.forEach((el) => {
             createCard(el);
         })
     });
 }
 
-function createCard(data, add = false, ret = false){
+const createCard = (data, add = false, ret = false) => {
 
     let nc = copy_container.clone();
     $(nc).removeClass("d-none");
     $(nc).blur();
     $(nc).attr("id", "show-" + data.id);
 
-    if (cardNum % 10 == 0 ) {
+    if (cardNum % 10 == 0 && data.backdrop_path) {
         $(nc).css("width", ( $(".main-container").width() * 3 ) + "px");
-       // $('.ticket__movie-overview', nc).css("width", ( container_width * 3 ) + "px");
-       // $('.ticket__movie-overview', nc).css("height", ( container_height * 1 ) + "px");
-        (data.backdrop_path) ? $('img', nc).attr("src", image_path_500 + data.backdrop_path) : $('img', nc).attr("src", "./assets/images/default_poster.png");
+        $('img', nc).attr("src", image_path_500 + data.backdrop_path);
     } else {
         (data.poster_path) ? $('img', nc).attr("src", image_path + data.poster_path) : $('img', nc).attr("src", "./assets/images/default_poster.png");
     }
     
     if (add) {
         $('.watchlist-ribbon__icon > i').removeClass().addClass("bi bi-plus-circle-fill");
-        $('.watchlist-ribbon', nc).attr("onclick", `addShow(${data.id})`);
+        $('.watchlist-ribbon', nc).attr("onclick", `addShow(${data.id})`).attr("title", lang[lg]['show_addtitle']).tooltip();;
         $('.ticket__movie-network', nc).remove();
         $('.ticket__movie-details', nc).html(data.overview);
         $('.ticket__movie-episodedata', nc).html(data.first_air_date);
         $('.ticket__movie-next', nc).html(`<i class="bi bi-star-fill"></i> ` + Math.round(data.vote_average * 10) / 10 );
         
     } else {
-        /*$('.hero-container.blocks .watchlist-ribbon').hover( function(){
-            $('.watchlist-ribbon__bg').css("fill", "red")
-        })*/
+        $('.watchlist-ribbon', nc).attr("onclick", `removeShow(${data.id})`).attr("title", lang[lg]['show_deltitle']).tooltip();
+        $('.watchlist-ribbon__bg', nc).removeClass("watchlist-ribbon__bg").addClass("watchlist-ribbon__bg-remove");
         $('.watchlist-ribbon__icon > i', nc).removeClass();//.addClass("bi bi-dash-circle-fill");
         $('.watchlist-ribbon__icon > i', nc).addClass("bi bi-dash-circle-fill");
-        $('.watchlist-ribbon', nc).attr("onclick", `removeShow(${data.id})`);
         
         if ( data.networks !== undefined ) $('.ticket__movie-network', nc).html(data.networks[0].name);
         (data.next_episode_to_air !== null) ? $('.ticket__movie-episodedata', nc).html(`S${data.next_episode_to_air.season_number}.E${data.next_episode_to_air.episode_number} | ${data.next_episode_to_air.name}`) : $('.ticket__movie-episodedata', nc).html(data.last_episode_to_air.air_date);
@@ -266,7 +280,7 @@ function createCard(data, add = false, ret = false){
     $('.ticket__movie-popularity', nc).html(data.vote_average);
     $('.ticket__movie-title', nc).html(data.name);
     $('.ticket__movie-date', nc).html(getYearFromDate(data.first_air_date));
-    (data.number_of_seasons) ? $('.ticket__movie-completed', nc).html(`<strong>${data.number_of_seasons}</strong> Seasons`) : $('.ticket__movie-completed', nc).remove(); 
+    (data.number_of_seasons) ? $('.ticket__movie-completed', nc).html(`<strong>${data.number_of_seasons}</strong> ${lang[lg]['show_seasons']}`) : $('.ticket__movie-completed', nc).remove(); 
 
     if (ret == true) return nc;
 
@@ -275,8 +289,7 @@ function createCard(data, add = false, ret = false){
 
     cardNum++;
 }
-
-function daysDiff(endDate, rText = true){
+const daysDiff = (endDate, rText = true) => {
     const date1 = new Date();
     
     const date2 = new Date(endDate);
@@ -356,7 +369,7 @@ const addShow = (id) => {
     return false;
 }
 
-function activeMenu(url){
+const activeMenu = (url) => {
     let active = "home";
     if ( url !== "" ) {
         url = url.replace("/", "");
@@ -376,6 +389,7 @@ $( document ).ready(function(){
 
     switch(url[1]) {
         case "": case undefined: default:
+            setPageTitle(lang[lg]["menu_myshows"]);
             loadShowsfromDB(); url[1] = "";
             if (objectCount(database) == 0) {
                 iziToast.info({
@@ -388,8 +402,8 @@ $( document ).ready(function(){
                 });
             }
             break;
-        case "/trending": loadTrendingShows(); break;
-        case "/hot": loadHotShows(); break;
+        case "/trending": loadTrendingShows();  setPageTitle(lang[lg]["menu_trending"]); break;
+        case "/hot": loadHotShows(); setPageTitle(lang[lg]["menu_hot"]); break;
     }
 
     activeMenu(url[1]);
@@ -410,6 +424,7 @@ window.addEventListener('hashchange', function(e){
 
     switch(url[1]) {
         case "": default:
+            setPageTitle(lang[lg]["menu_myshows"]);
             loadShowsfromDB(); 
             if (objectCount(database) == 0) {
                 iziToast.info({
@@ -422,8 +437,8 @@ window.addEventListener('hashchange', function(e){
                 });
             }
             break;
-        case "/trending": loadTrendingShows(); break;
-        case "/hot": loadHotShows(); break;
+        case "/trending": loadTrendingShows(); setPageTitle(lang[lg]["menu_trending"]); break;
+        case "/hot": loadHotShows(); setPageTitle(lang[lg]["menu_hot"]); break;
     }
 
     activeMenu(url[1]);
