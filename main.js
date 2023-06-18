@@ -1,4 +1,3 @@
-let local_api_path = "http://home.local/proyects/tv/api"
 let image_path = "https://image.tmdb.org/t/p/w300_and_h450_bestv2";
 let image_path_500 = "https://image.tmdb.org/t/p/w500";
 let tmdb_options = {method: 'GET',headers: {accept: 'application/json', Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiMTdiOTBhNTE4N2I2ZGQyMDYwNDA2YTk0YmUzY2Y0MSIsInN1YiI6IjY0ODdiODI1ZTI3MjYwMDBjOTMxZDQ2NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.E-YGCzw4sOaRfJM-sM40r88ZFZbrelCImRqdDsmtttU'}};
@@ -13,8 +12,17 @@ let container_width = Number(getComputedStyle(document.documentElement).getPrope
 let container_height= Number(getComputedStyle(document.documentElement).getPropertyValue('--cardHeight').replace("px", ""));
 let requestTimer = true;
 
+let toast_config = {
+    position: `topCenter`,
+    transitionIn: `fadeInDown`,
+    timeout: 15000,
+    displayMode:  2
+    }
+
 let copy_container = $("#default_container").clone();
 let copy_loader = $("#default_loader").clone();
+$("#default_container").remove();
+$("#default_loader").remove();
 
 let lg = "en";
 let lang = {
@@ -31,24 +39,17 @@ let lang = {
         show_seasons: "Seasons",
     }
 }
-$("#default_container").remove();
-$("#default_loader").remove();
-$("#load-more-btn").remove();
+
+
+Date.prototype.dayOfYear= function(){
+    var j1= new Date(this);
+    j1.setMonth(0, 0);
+    return Math.round((this-j1)/8.64e7);
+}
 
 const setPageTitle = (title_text) => {
     document.title = `${lang[lg]["main_title"]} | ${title_text}`; 
 } 
-
-function canRequest(){
-    if (requestTimer) {
-        requestTimer = false;
-            setTimeout(function(){
-                requestTimer = true;
-            }, 2000);
-        return true;
-    } 
-    return false
-}
 
 const getYearFromDate = (date) => {
     const d = new Date(date);
@@ -76,12 +77,6 @@ const infinityScroll = () => {
     }
 }
 
-Date.prototype.dayOfYear= function(){
-    var j1= new Date(this);
-    j1.setMonth(0, 0);
-    return Math.round((this-j1)/8.64e7);
-}
-
 $("#main_search").select2({
     ajax: {
         url: "https://api.themoviedb.org/3/search/tv",
@@ -97,7 +92,6 @@ $("#main_search").select2({
             },
             cache: true
         },
-        //width: "80vw",
     
         placeholder: lang[lg]['search_placeholder'],
         minimumInputLength: 5,
@@ -105,22 +99,22 @@ $("#main_search").select2({
             //templateSelection: formatRepoSelection,
         });
     
-    function formatShow (show) {
-        if (show.loading) return show.text;
+function formatShow (show) {
+    if (show.loading) return show.text;
+
+    ( show.origin_country.length == 0) ? origin_country_div = "" : origin_country_div =  `<div class='select2-result-tv network'>(${show.origin_country})</div>`;
+    ( show.poster_path === undefined) ? poster_path_div = "" : poster_path_div =  `<div class='select2-result-tv logo col-md-auto'><img loading='lazy' src='${image_path }${show.poster_path}'/></div>`;
+
+    var container = $(
+    "<div class='select2-result-shows row' onClick='select_show('>" + 
+        poster_path_div +  
+        `<div class='select2-result-tv-data col'><div class='select2-result-tv id'>${show.id}${origin_country_div}</div>` +
+        `<div class='select2-result-tv show_name'>${show.name} - (${getYearFromDate(show.first_air_date)})</div>` +
+    "</div></div>"
+    );
     
-        ( show.origin_country.length == 0) ? origin_country_div = "" : origin_country_div =  `<div class='select2-result-tv network'>(${show.origin_country})</div>`;
-        ( show.poster_path === undefined) ? poster_path_div = "" : poster_path_div =  `<div class='select2-result-tv logo col-md-auto'><img loading='lazy' src='${image_path }${show.poster_path}'/></div>`;
-    
-        var container = $(
-        "<div class='select2-result-shows row' onClick='select_show('>" + 
-            poster_path_div +  
-            `<div class='select2-result-tv-data col'><div class='select2-result-tv id'>${show.id}${origin_country_div}</div>` +
-            `<div class='select2-result-tv show_name'>${show.name} - (${getYearFromDate(show.first_air_date)})</div>` +
-        "</div></div>"
-        );
-    
-        return container;
-    }
+    return container;s
+}
 
 $('#main_search').on("select2:select", function(e) {
     $('#main_search').select2("val", "null");
@@ -143,16 +137,19 @@ const objectCount = (obj) => {
     return count;
 }
 
-async function loadShowsfromDB(display = true){
+const loadShowsfromDB = async (display = true) => {
     let temp_db = window.localStorage.getItem(storage_name);
     (temp_db === null) ? database = new Object() : database = JSON.parse(temp_db);
 
-    if (display == true) $(".hero-container").html(copy_loader.html()), displayShows(database), $(".hero-container").html("");
+    if (display == true) 
+        $(".hero-container").html(copy_loader.html()), 
+        displayShows(database), 
+        $(".hero-container").html("");
 
     return database
 }
 
-async function loadTrendingShows(reload = false){
+const loadTrendingShows = async (reload = false) => {
     if (!reload)  $(".hero-container").html(copy_loader.html());
     //fetch('https://api.themoviedb.org/3/tv/popular?language=en-US&page=1', tmdb_options)
     fetch(`https://api.themoviedb.org/3/trending/tv/week?language=en-US&page=${page}`, tmdb_options)
@@ -174,13 +171,11 @@ async function loadTrendingShows(reload = false){
     });
 }
 
-function joinDate(t, a, s) {
+const joinDate = (t, a, s) =>{
     function format(m) {
         let f = new Intl.DateTimeFormat('en', m);
         return f.format(t);
-
     }
-
     return a.map(format).join(s);
 }
 
@@ -267,13 +262,11 @@ const createCard = (data, add = false, ret = false) => {
     } else {
         $('.watchlist-ribbon', nc).attr("onclick", `removeShow(${data.id})`).attr("title", lang[lg]['show_deltitle']).tooltip();
         $('.watchlist-ribbon__bg', nc).removeClass("watchlist-ribbon__bg").addClass("watchlist-ribbon__bg-remove");
-        $('.watchlist-ribbon__icon > i', nc).removeClass();//.addClass("bi bi-dash-circle-fill");
-        $('.watchlist-ribbon__icon > i', nc).addClass("bi bi-dash-circle-fill");
+        $('.watchlist-ribbon__icon > i', nc).removeClass().addClass("bi bi-dash-circle-fill");
         
         if ( data.networks !== undefined ) $('.ticket__movie-network', nc).html(data.networks[0].name);
         (data.next_episode_to_air !== null) ? $('.ticket__movie-episodedata', nc).html(`S${data.next_episode_to_air.season_number}.E${data.next_episode_to_air.episode_number} | ${data.next_episode_to_air.name}`) : $('.ticket__movie-episodedata', nc).html(data.last_episode_to_air.air_date);
         (data.next_episode_to_air !== null) ? $('.ticket__movie-next', nc).html(daysDiff(data.next_episode_to_air.air_date)) : $('.ticket__movie-next', nc).html("Completed").addClass("bg-primary");
-        
     }
     
     $('.ticket__movie-overview', nc).html(data.overview);
@@ -289,6 +282,7 @@ const createCard = (data, add = false, ret = false) => {
 
     cardNum++;
 }
+
 const daysDiff = (endDate, rText = true) => {
     const date1 = new Date();
     
@@ -305,17 +299,6 @@ const daysDiff = (endDate, rText = true) => {
 
     //return date2.dayOfYear() - date1.dayOfYear();
 }
-
-const removeShow1 = (id) => {
-    console.log("Remove show: ", id);
-
-    fetch(local_api_path + "?method=delete&id=" + id)
-    .then((response) => response.json())
-    .then((response) => { $(`#show-${id}`).remove(); })
-    .catch(err => console.error(err));
-
-}
-
 const removeShow = (id) => {
     iziToast.warning({
         title: 'Showly',
@@ -382,6 +365,13 @@ const activeMenu = (url) => {
     console.log("Loading: ", active);
 }
 
+const noShowsInDatabase = () => {
+    toast_config.title = 'Showly';
+    toast_config.message = `You currently have no shows, add shows in the search bar or in the trending/hot categories`;
+
+    iziToast.info(toast_config);
+}
+
 $( document ).ready(function(){
     loadShowsfromDB(false);
     //
@@ -391,16 +381,7 @@ $( document ).ready(function(){
         case "": case undefined: default:
             setPageTitle(lang[lg]["menu_myshows"]);
             loadShowsfromDB(); url[1] = "";
-            if (objectCount(database) == 0) {
-                iziToast.info({
-                    title: 'Showly',
-                    message: `You currently have no shows, add shows in the search bar or in the trending/hot categories`,
-                    position: `topCenter`,
-                    transitionIn: `fadeInDown`, 
-                    timeout: 15000,
-                    displayMode: 2
-                });
-            }
+            if (objectCount(database) == 0) noShowsInDatabase();
             break;
         case "/trending": loadTrendingShows();  setPageTitle(lang[lg]["menu_trending"]); break;
         case "/hot": loadHotShows(); setPageTitle(lang[lg]["menu_hot"]); break;
@@ -421,21 +402,11 @@ window.addEventListener('hashchange', function(e){
     loadShowsfromDB(false);
 
     let url = e.newURL.split("#");
-
     switch(url[1]) {
         case "": default:
             setPageTitle(lang[lg]["menu_myshows"]);
             loadShowsfromDB(); 
-            if (objectCount(database) == 0) {
-                iziToast.info({
-                    title: 'Showly',
-                    message: `You currently have no shows, add shows in the search bar or in the trending/hot categories`,
-                    position: `topCenter`,
-                    transitionIn: `fadeInDown`, 
-                    timeout: 15000, 
-                    displayMode: 2
-                });
-            }
+            if (objectCount(database) == 0) noShowsInDatabase();
             break;
         case "/trending": loadTrendingShows(); setPageTitle(lang[lg]["menu_trending"]); break;
         case "/hot": loadHotShows(); setPageTitle(lang[lg]["menu_hot"]); break;
