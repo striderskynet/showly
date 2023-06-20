@@ -255,7 +255,7 @@ const createCard = (data, add = false, ret = false) => {
         $('.watchlist-ribbon__icon > i').removeClass().addClass("bi bi-plus-circle-fill");
         $('.watchlist-ribbon', nc).attr("onclick", `addShow(${data.id})`).attr("title", lang[lg]['show_addtitle']).tooltip();;
         $('.ticket__movie-network', nc).remove();
-        $('.ticket__movie-details', nc).html(data.overview);
+        //$('.ticket__movie-details', nc).html(data.overview);
         $('.ticket__movie-episodedata', nc).html(data.first_air_date);
         $('.ticket__movie-next', nc).html(`<i class="bi bi-star-fill"></i> ` + Math.round(data.vote_average * 10) / 10 );
         
@@ -265,7 +265,7 @@ const createCard = (data, add = false, ret = false) => {
         $('.watchlist-ribbon__icon > i', nc).removeClass().addClass("bi bi-dash-circle-fill");
         
         if ( data.networks !== undefined ) $('.ticket__movie-network', nc).html(data.networks[0].name);
-        (data.next_episode_to_air !== null) ? $('.ticket__movie-episodedata', nc).html(`S${data.next_episode_to_air.season_number}.E${data.next_episode_to_air.episode_number} | ${data.next_episode_to_air.name}`) : $('.ticket__movie-episodedata', nc).html(data.last_episode_to_air.air_date);
+        (data.next_episode_to_air !== null) ? $('.ticket__movie-episodedata', nc).html(`S${data.next_episode_to_air.season_number}.E${data.next_episode_to_air.episode_number} - ${data.next_episode_to_air.name}`) : $('.ticket__movie-episodedata', nc).html(data.last_episode_to_air.air_date);
         (data.next_episode_to_air !== null) ? $('.ticket__movie-next', nc).html(daysDiff(data.next_episode_to_air.air_date)) : $('.ticket__movie-next', nc).html("Completed").addClass("bg-primary");
     }
     
