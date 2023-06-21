@@ -401,6 +401,7 @@ const noShowsInDatabase = () => {
 const loadSortDropdown = () => {
     const url = window.location.href.split("#");
 
+    if (!url[1]) url[1] = "";
     if(!url[1].includes("/hot")) {
         dropdown.hide();
         return false;
@@ -436,6 +437,7 @@ $( document ).ready(function(){
     loadSortDropdown();
     //
     let url = window.location.href.split("#");
+    if (!url[1]) url[1] = "";
     if (url[1].split(":")[1])  url[1] = url[1].split(":")[0];
 
     switch(url[1]) {
