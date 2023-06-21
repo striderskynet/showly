@@ -250,7 +250,9 @@ const createCard = (data, add = false, ret = false) => {
     } else {
         (data.poster_path) ? $('img', nc).attr("src", image_path + data.poster_path) : $('img', nc).attr("src", "./assets/images/default_poster.png");
     }
-    
+
+    $('img', nc).attr("alt", data.name);
+
     if (add) {
         $('.watchlist-ribbon__icon > i').removeClass().addClass("bi bi-plus-circle-fill");
         $('.watchlist-ribbon', nc).attr("onclick", `addShow(${data.id})`).attr("title", lang[lg]['show_addtitle']).tooltip();;
