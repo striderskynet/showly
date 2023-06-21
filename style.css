@@ -67,8 +67,6 @@ body {
         bottom: 0px;
         opacity: 0;
         position: absolute;
-        font-size: 8px;
-        line-gap-override: 0px;
         text-align: center;
     }
 
@@ -127,8 +125,8 @@ body {
     }
 
     .hero-container.blocks .main-container{
-        max-width: var(--cardWidth);
-        min-width: calc( var(--cardWidth) * 0.85 );
+        width: var(--cardWidth);
+        width: calc( var(--cardWidth) * 0.85 );
         height: var(--cardHeight);
         margin: var(--cardMargin);
     }
@@ -203,15 +201,21 @@ body {
 
     .hero-container.blocks .main-container .ticket__movie-title{
         display: block;
-        font-size: 1rem;
+        font-size: 1.2em;
+        height: 1lh;
         text-align:left;
         padding: 5px 10px 0px 10px;
+        overflow: hidden;      
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
     }
 
     .hero-container.blocks .main-container .ticket__movie-episodedata{
+        margin-top: 5px;
         display: block;
         text-align:left;
-        color: #aaa;
+        color: #777;
+        font-weight: bolder;
         text-align: center;
     }
 
@@ -385,7 +389,7 @@ footer {
     height: 100%;
     overflow: hidden;      
     -o-text-overflow: ellipsis;
-    text-overflow: ellipsis;
+    text-overflow:ellipsis;
     color: #fff;
     z-index: 4;
 }

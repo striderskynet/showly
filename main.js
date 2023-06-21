@@ -12,6 +12,25 @@ let container_width = Number(getComputedStyle(document.documentElement).getPrope
 let container_height= Number(getComputedStyle(document.documentElement).getPropertyValue('--cardHeight').replace("px", ""));
 let requestTimer = true;
 
+let active_sorting = "popularity.desc";
+let existing_sorting = [
+    "popularity.asc",
+    "popularity.desc",
+    "revenue.asc",
+    "revenue.desc",
+    "primary_release_date.asc",
+    "primary_release_date.desc",
+    "vote_average.asc",
+    "vote_average.desc",
+    "vote_count.asc",
+    "vote_count.desc"
+]
+
+    const dropdown = $("#sorting_dropdown");
+    const dd_button = $("#sorting_dropdown > button");
+    const dd_menu = $("#sorting_dropdown > .dropdown-menu");
+    const dd_item = $("#sorting_dropdown > .dropdown-menu li").clone(); $("#sorting_dropdown > .dropdown-menu li").remove();
+
 let toast_config = {
     position: `topCenter`,
     transitionIn: `fadeInDown`,
@@ -65,6 +84,8 @@ const infinityScroll = () => {
             page++;
             
             let url = window.location.href.split("#");
+            if (url[1].split(":")[1])  url[1] = url[1].split(":")[0];
+
             switch (url[1]) {
                 case "/trending":
                     loadTrendingShows(true);
@@ -113,7 +134,7 @@ function formatShow (show) {
     "</div></div>"
     );
     
-    return container;s
+    return container;
 }
 
 $('#main_search').on("select2:select", function(e) {
@@ -152,7 +173,7 @@ const loadShowsfromDB = async (display = true) => {
 const loadTrendingShows = async (reload = false) => {
     if (!reload)  $(".hero-container").html(copy_loader.html());
     //fetch('https://api.themoviedb.org/3/tv/popular?language=en-US&page=1', tmdb_options)
-    fetch(`https://api.themoviedb.org/3/trending/tv/week?language=en-US&page=${page}`, tmdb_options)
+    fetch(`https://api.themoviedb.org/3/trending/tv/week?language=en-US&page=${page}&sort_by=${active_sorting}`, tmdb_options)
     .then(response => response.json())
     .then(async response => {
         database = await loadShowsfromDB(false);
@@ -188,7 +209,9 @@ async function loadHotShows(reload = false){
     weekAgo = joinDate(weekAgo, dateFormat, "-");
     // = "2023-6-10";
 
-    fetch(`https://api.themoviedb.org/3/discover/tv?first_air_date.gte=${weekAgo}&include_adult=false&include_null_first_air_dates=false&language=en-US&page=${page}&sort_by=popularity.desc&with_origin_country=US&with_original_language=en`, tmdb_options)
+
+    let uri = `https://api.themoviedb.org/3/discover/tv?first_air_date.gte=${weekAgo}&include_adult=false&include_null_first_air_dates=false&language=en-US&page=${page}&sort_by=${active_sorting}&with_origin_country=US&with_original_language=en`;
+    fetch(uri, tmdb_options)
     .then(response => response.json())
     .then(async response => {
         database = await loadShowsfromDB(false);
@@ -245,6 +268,7 @@ const createCard = (data, add = false, ret = false) => {
     $(nc).attr("id", "show-" + data.id);
 
     if (cardNum % 10 == 0 && data.backdrop_path) {
+        
         $(nc).css("width", ( $(".main-container").width() * 3 ) + "px");
         $('img', nc).attr("src", image_path_500 + data.backdrop_path);
     } else {
@@ -374,10 +398,45 @@ const noShowsInDatabase = () => {
     iziToast.info(toast_config);
 }
 
+const loadSortDropdown = () => {
+    const url = window.location.href.split("#");
+
+    if(!url[1].includes("/hot")) {
+        dropdown.hide();
+        return false;
+    }
+
+    let route = url[1];
+    if (url[1].split(":")[1]) {
+        route = url[1].split(":")[0];
+        active_sorting = url[1].split(":")[1];
+    }
+
+    dropdown.show();
+    dd_menu.html("");
+
+    existing_sorting.map(el => {
+        dd_item.children("a").removeClass("active");
+        let asc_desc = el.split(".");
+
+        if (el == active_sorting) dd_button.html(el), dd_item.children("a").addClass("active");
+        dd_item.children("a").html(asc_desc[0]).attr("href", `#${route}:${el}`);
+        
+        if (asc_desc[1] == "asc") dd_item.children("a").prepend($(`<i class="bi bi-arrow-up me-3 text-success"></i>`));
+        else dd_item.children("a").prepend($(`<i class="bi bi-arrow-down me-3 text-success"></i>`));
+        
+        dd_menu.append(dd_item.clone());
+       // console.log(el);
+    })
+    //console.log(dropdown,dd_button,dd_menu,dd_item);
+}
+
 $( document ).ready(function(){
     loadShowsfromDB(false);
+    loadSortDropdown();
     //
     let url = window.location.href.split("#");
+    if (url[1].split(":")[1])  url[1] = url[1].split(":")[0];
 
     switch(url[1]) {
         case "": case undefined: default:
@@ -402,8 +461,11 @@ window.addEventListener('hashchange', function(e){
     cardNum = 1;
     $(window).off("scroll", infinityScroll);
     loadShowsfromDB(false);
+    loadSortDropdown();
 
     let url = e.newURL.split("#");
+    if (url[1].split(":")[1])  url[1] = url[1].split(":")[0];
+    
     switch(url[1]) {
         case "": default:
             setPageTitle(lang[lg]["menu_myshows"]);
