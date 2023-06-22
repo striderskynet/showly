@@ -325,7 +325,7 @@ ul.select2-results__options li:hover{
 }
 
 footer {
-    bottom: -2px;
+    position: relative;
     z-index: 99;
 }
 /* Breadcrumbs Styles */
@@ -349,7 +349,7 @@ footer {
 .hero-container.blocks, .hero-container.rows {
 	margin: auto;
     cursor: pointer;
-    min-height: 84.5vh;
+    min-height: 100vh;
 }
 
 .hero-container.blocks {
@@ -372,6 +372,7 @@ footer {
     position: relative;
     font-size: 0.8em !important;
     border-radius: 10px;
+    flex-grow: 1;
 }
 
 .hero-container.blocks .poster-container {

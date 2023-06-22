@@ -9,7 +9,7 @@ let showlist = [];
 let page = 1;
 let cardNum = 1;
 
-const active_sorting = "popularity.desc";
+let active_sorting = "popularity.desc";
 let existing_sorting = [
     "popularity.asc",
     "popularity.desc",
@@ -261,7 +261,26 @@ const infinityScroll = () => {
 const shareShow =  (id) => {
     console.log(export_show_path + id);
     console.log("Sharing:", id);
-    navigator.clipboard.writeText(export_show_path + id);
+
+    try {
+        navigator.clipboard.writeText(export_show_path + id);
+
+        
+    } catch (error) {
+        console.log(error);
+
+        iziToast.warning({
+            title: 'Showly',
+            message: `Cant copy show <strong>${id}</strong> URL to clipboard`
+        });
+
+        return false;
+    }
+
+    iziToast.sucess({
+        title: 'Showly',
+        message: `Show <strong>${id}</strong> URL copied to clipboard`
+    });
 }
 
 const createCard = (data, add = false, ret = false) => {
