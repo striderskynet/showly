@@ -1,18 +1,14 @@
-let image_path = "https://image.tmdb.org/t/p/w300_and_h450_bestv2";
-let image_path_500 = "https://image.tmdb.org/t/p/w500";
-let tmdb_options = {method: 'GET',headers: {accept: 'application/json', Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiMTdiOTBhNTE4N2I2ZGQyMDYwNDA2YTk0YmUzY2Y0MSIsInN1YiI6IjY0ODdiODI1ZTI3MjYwMDBjOTMxZDQ2NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.E-YGCzw4sOaRfJM-sM40r88ZFZbrelCImRqdDsmtttU'}};
+const image_path = "https://image.tmdb.org/t/p/w300_and_h450_bestv2";
+const image_path_500 = "https://image.tmdb.org/t/p/w500";
+const tmdb_options = {method: 'GET',headers: {accept: 'application/json', Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiMTdiOTBhNTE4N2I2ZGQyMDYwNDA2YTk0YmUzY2Y0MSIsInN1YiI6IjY0ODdiODI1ZTI3MjYwMDBjOTMxZDQ2NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.E-YGCzw4sOaRfJM-sM40r88ZFZbrelCImRqdDsmtttU'}};
 
-let storage_name = "showly_database";
-let database = Object();
+const storage_name = "showly_database";
+let database = {};
+let showlist = [];
 let page = 1;
 let cardNum = 1;
-let tmdb_header = tmdb_options.headers;
-let showlist = Array();
-let container_width = Number(getComputedStyle(document.documentElement).getPropertyValue('--cardWidth').replace("px", ""));
-let container_height= Number(getComputedStyle(document.documentElement).getPropertyValue('--cardHeight').replace("px", ""));
-let requestTimer = true;
 
-let active_sorting = "popularity.desc";
+const active_sorting = "popularity.desc";
 let existing_sorting = [
     "popularity.asc",
     "popularity.desc",
@@ -26,25 +22,25 @@ let existing_sorting = [
     "vote_count.desc"
 ]
 
-    const dropdown = $("#sorting_dropdown");
-    const dd_button = $("#sorting_dropdown > button");
-    const dd_menu = $("#sorting_dropdown > .dropdown-menu");
-    const dd_item = $("#sorting_dropdown > .dropdown-menu li").clone(); $("#sorting_dropdown > .dropdown-menu li").remove();
+const dropdown = $("#sorting_dropdown");
+const dd_button = $("#sorting_dropdown > button");
+const dd_menu = $("#sorting_dropdown > .dropdown-menu");
+const dd_item = $("#sorting_dropdown > .dropdown-menu li").clone(); $("#sorting_dropdown > .dropdown-menu li").remove();
+const copy_container = $("#default_container").clone();
+const copy_loader = $("#default_loader").clone();
+$("#default_container").remove();
+$("#default_loader").remove();
 
-let toast_config = {
+
+const toast_config = {
     position: `topCenter`,
     transitionIn: `fadeInDown`,
     timeout: 15000,
     displayMode:  2
     }
 
-let copy_container = $("#default_container").clone();
-let copy_loader = $("#default_loader").clone();
-$("#default_container").remove();
-$("#default_loader").remove();
-
-let lg = "en";
-let lang = {
+const lg = "en";
+const lang = {
     en: {
         main_title: "Showly",
         menu_myshows: "My shows", 
@@ -77,27 +73,6 @@ const getYearFromDate = (date) => {
     return year;
 }
 
-const infinityScroll = () => {
-    
-    if ($(window).scrollTop() >= $(document).height() - ($(window).height() * 2)) {
-        if (page <= 50) {
-            page++;
-            
-            let url = window.location.href.split("#");
-            if (url[1].split(":")[1])  url[1] = url[1].split(":")[0];
-
-            switch (url[1]) {
-                case "/trending":
-                    loadTrendingShows(true);
-                    break;
-                case "/hot":   
-                    loadHotShows(true);
-                    break;
-            }
-        }
-    }
-}
-
 $("#main_search").select2({
     ajax: {
         url: "https://api.themoviedb.org/3/search/tv",
@@ -123,7 +98,8 @@ $("#main_search").select2({
 function formatShow (show) {
     if (show.loading) return show.text;
 
-    ( show.origin_country.length == 0) ? origin_country_div = "" : origin_country_div =  `<div class='select2-result-tv network'>(${show.origin_country})</div>`;
+    let origin_country_div = "";
+    if ( show.origin_country.length != 0) origin_country_div =  `<div class='select2-result-tv network'>(${show.origin_country})</div>`;
     ( show.poster_path === undefined) ? poster_path_div = "" : poster_path_div =  `<div class='select2-result-tv logo col-md-auto'><img loading='lazy' src='${image_path }${show.poster_path}'/></div>`;
 
     var container = $(
@@ -152,17 +128,15 @@ $('#main_search').on("select2:select", function(e) {
 
 const objectCount = (obj) => {
     let count = 0;
-    Object.keys(obj).forEach(el => {
-        count++;
-    });
+    Object.keys(obj).forEach(function (){count += 1});
     return count;
 }
 
 const loadShowsfromDB = async (display = true) => {
     let temp_db = window.localStorage.getItem(storage_name);
-    (temp_db === null) ? database = new Object() : database = JSON.parse(temp_db);
+    (temp_db === null) ? database = {} : database = JSON.parse(temp_db);
 
-    if (display == true) 
+    if (display === true) 
         $(".hero-container").html(copy_loader.html()), 
         displayShows(database), 
         $(".hero-container").html("");
@@ -178,7 +152,7 @@ const loadTrendingShows = async (reload = false) => {
     .then(async response => {
         database = await loadShowsfromDB(false);
 
-        const arr = Array();
+        const arr = [];
         Object.values(database).forEach(el => {
             arr.push(el);
         })
@@ -216,7 +190,7 @@ async function loadHotShows(reload = false){
     .then(async response => {
         database = await loadShowsfromDB(false);
 
-        const arr = Array();
+        const arr = [];
         Object.values(database).forEach(el => {
             arr.push(el);
         })
@@ -232,7 +206,7 @@ async function loadHotShows(reload = false){
 
 const displayShows = async (data) => {
     $(".hero-container").html(copy_loader.html());
-    showlist = Array();
+    showlist = [];
     var fetches = [];
     
     Object.values(data).forEach(el => {
@@ -258,6 +232,28 @@ const displayShows = async (data) => {
             createCard(el);
         })
     });
+}
+
+const infinityScroll = () => {
+    
+    if ($(window).scrollTop() >= $(document).height() - ($(window).height() * 2)) {
+        if (page <= 50) {
+            page += 1;
+            
+            let url = window.location.href.split("#");
+            if (url[1].split(":")[1])  url[1] = url[1].split(":")[0];
+
+            switch (url[1]) {
+                default: break;
+                case "/trending":
+                    loadTrendingShows(true);
+                    break;
+                case "/hot":   
+                    loadHotShows(true);
+                    break;
+            }
+        }
+    }
 }
 
 const createCard = (data, add = false, ret = false) => {
@@ -301,12 +297,12 @@ const createCard = (data, add = false, ret = false) => {
     $('.ticket__movie-date', nc).html(getYearFromDate(data.first_air_date));
     (data.number_of_seasons) ? $('.ticket__movie-completed', nc).html(`<strong>${data.number_of_seasons}</strong> ${lang[lg]['show_seasons']}`) : $('.ticket__movie-completed', nc).remove(); 
 
-    if (ret == true) return nc;
+    if (ret === true) return nc;
 
     $(".hero-container").append(nc);
     $(nc).show();
 
-    cardNum++;
+    cardNum += 1;
 }
 
 const daysDiff = (endDate, rText = true) => {
@@ -381,8 +377,7 @@ const addShow = (id) => {
 const activeMenu = (url) => {
     let active = "home";
     if ( url !== "" ) {
-        url = url.replace("/", "");
-        active = url;
+        active = url.replace("/", "");
     }
 
     $(".navbar-nav li a").removeClass("active");
@@ -399,11 +394,11 @@ const noShowsInDatabase = () => {
 }
 
 const loadSortDropdown = () => {
-    const url = window.location.href.split("#");
+    let url = window.location.href.split("#");
 
     if (!url[1]) url[1] = "";
     if(!url[1].includes("/hot")) {
-        dropdown.hide();
+        dropdown.addClass("d-none");
         return false;
     }
 
@@ -413,7 +408,7 @@ const loadSortDropdown = () => {
         active_sorting = url[1].split(":")[1];
     }
 
-    dropdown.show();
+    dropdown.removeClass("d-none");
     dd_menu.html("");
 
     existing_sorting.map(el => {
@@ -443,7 +438,8 @@ $( document ).ready(function(){
     switch(url[1]) {
         case "": case undefined: default:
             setPageTitle(lang[lg]["menu_myshows"]);
-            loadShowsfromDB(); url[1] = "";
+            loadShowsfromDB(); 
+            url[1] = "";
             if (objectCount(database) == 0) noShowsInDatabase();
             break;
         case "/trending": loadTrendingShows();  setPageTitle(lang[lg]["menu_trending"]); break;
