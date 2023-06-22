@@ -93,7 +93,7 @@ body {
         width: 80vw;
     }
 
-    .hero-container.blocks .watchlist-ribbon{
+    .hero-container.blocks .watchlist-irbbon{
         position: absolute;
         top: 0px;
         right: 10px;
@@ -167,16 +167,25 @@ body {
         width: 35vw;
     }
 
+    .hero-container.blocks .share-ribbon,
     .hero-container.blocks .watchlist-ribbon{
         position: absolute;
         text-align: center;
         top: 0px;
-        right:0px;
         transition:opacity 0.3s ease-in-out;
         opacity: 0;
         z-index: 6;
     }
 
+    
+    .hero-container.blocks .share-ribbon{
+        right:  45px;
+    }
+    .hero-container.blocks .watchlist-ribbon{
+        right: 0px;
+    }
+
+    .hero-container.blocks .share-ribbon .share-ribbon__icon,
     .hero-container.blocks .watchlist-ribbon .watchlist-ribbon__icon{
         position: absolute;
         top: 0.25em;
@@ -184,6 +193,7 @@ body {
         font-size: 25px;
     }
     
+    .hero-container.blocks .share-ribbon .share-ribbon__bg,
     .hero-container.blocks .watchlist-ribbon .watchlist-ribbon__bg,
     .hero-container.blocks .watchlist-ribbon .watchlist-ribbon__bg-remove{
         width: 40px;
@@ -398,6 +408,9 @@ footer {
     display: block;
 }
 
+.hero-container.blocks .share-ribbon:hover .share-ribbon__bg{
+    fill: var(--bs-primary);
+}
 .hero-container.blocks .watchlist-ribbon:hover .watchlist-ribbon__bg{
     fill: var(--bs-success);
 }
@@ -406,6 +419,7 @@ footer {
     fill: var(--bs-danger);
 }
 
+.hero-container.blocks .main-container:hover .share-ribbon,
 .hero-container.blocks .main-container:hover .watchlist-ribbon{
     opacity: 1;
 }

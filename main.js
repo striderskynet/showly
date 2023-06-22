@@ -1,3 +1,4 @@
+const export_show_path = "https://www.themoviedb.org/tv/";
 const image_path = "https://image.tmdb.org/t/p/w300_and_h450_bestv2";
 const image_path_500 = "https://image.tmdb.org/t/p/w500";
 const tmdb_options = {method: 'GET',headers: {accept: 'application/json', Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiMTdiOTBhNTE4N2I2ZGQyMDYwNDA2YTk0YmUzY2Y0MSIsInN1YiI6IjY0ODdiODI1ZTI3MjYwMDBjOTMxZDQ2NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.E-YGCzw4sOaRfJM-sM40r88ZFZbrelCImRqdDsmtttU'}};
@@ -51,6 +52,7 @@ const lang = {
 
         show_addtitle: "Add show",
         show_deltitle: "Remove show",
+        show_sharetitle: "Share the show with friends",
         show_seasons: "Seasons",
     }
 }
@@ -256,6 +258,12 @@ const infinityScroll = () => {
     }
 }
 
+const shareShow =  (id) => {
+    console.log(export_show_path + id);
+    console.log("Sharing:", id);
+    navigator.clipboard.writeText(export_show_path + id);
+}
+
 const createCard = (data, add = false, ret = false) => {
 
     let nc = copy_container.clone();
@@ -275,14 +283,15 @@ const createCard = (data, add = false, ret = false) => {
 
     if (add) {
         $('.watchlist-ribbon__icon > i').removeClass().addClass("bi bi-plus-circle-fill");
-        $('.watchlist-ribbon', nc).attr("onclick", `addShow(${data.id})`).attr("title", lang[lg]['show_addtitle']).tooltip();;
+        $('.watchlist-ribbon', nc).attr("onclick", `addShow(${data.id})`);//.attr("title", lang[lg]['show_addtitle']).tooltip();;
+        tippy($('.watchlist-ribbon', nc)[0], {content: lang[lg]['show_addtitle']});
         $('.ticket__movie-network', nc).remove();
-        //$('.ticket__movie-details', nc).html(data.overview);
         $('.ticket__movie-episodedata', nc).html(data.first_air_date);
         $('.ticket__movie-next', nc).html(`<i class="bi bi-star-fill"></i> ` + Math.round(data.vote_average * 10) / 10 );
         
     } else {
-        $('.watchlist-ribbon', nc).attr("onclick", `removeShow(${data.id})`).attr("title", lang[lg]['show_deltitle']).tooltip();
+        $('.watchlist-ribbon', nc).attr("onclick", `removeShow(${data.id})`);//.attr("title", lang[lg]['show_deltitle']).tooltip();
+        tippy($('.watchlist-ribbon', nc)[0], {content: lang[lg]['show_deltitle']});
         $('.watchlist-ribbon__bg', nc).removeClass("watchlist-ribbon__bg").addClass("watchlist-ribbon__bg-remove");
         $('.watchlist-ribbon__icon > i', nc).removeClass().addClass("bi bi-dash-circle-fill");
         
@@ -290,7 +299,10 @@ const createCard = (data, add = false, ret = false) => {
         (data.next_episode_to_air !== null) ? $('.ticket__movie-episodedata', nc).html(`S${data.next_episode_to_air.season_number}.E${data.next_episode_to_air.episode_number} - ${data.next_episode_to_air.name}`) : $('.ticket__movie-episodedata', nc).html(data.last_episode_to_air.air_date);
         (data.next_episode_to_air !== null) ? $('.ticket__movie-next', nc).html(daysDiff(data.next_episode_to_air.air_date)) : $('.ticket__movie-next', nc).html("Completed").addClass("bg-primary");
     }
-    
+
+
+    tippy($('.share-ribbon', nc)[0], {content: lang[lg]['show_sharetitle']});
+    $('.share-ribbon', nc).on("click",function(){shareShow(data.id)});
     $('.ticket__movie-overview', nc).html(data.overview);
     $('.ticket__movie-popularity', nc).html(data.vote_average);
     $('.ticket__movie-title', nc).html(data.name);
