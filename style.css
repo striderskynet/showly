@@ -1,13 +1,11 @@
 ::-webkit-scrollbar {
     width: 10px;
 }
-
 ::-webkit-scrollbar-thumb {
     background: var(--bs-primary);
     width: 5px;
     border-radius: 0.32rem;
 }
-
 ::-webkit-scrollbar-track {
     background: var(--bs-secondary);;
 }
@@ -18,7 +16,6 @@
     --cardMargin: 3px;
     
 }
-
 
 * {
 	box-sizing: border-box;
@@ -35,14 +32,84 @@ body {
 }
 
 
+/* Screen for mobile */
+@media only screen and (max-width:800px){
 
-@media only screen and (max-width:500px){
+    footer,
+    .breadcrumb-nav {
+        display: none !important;
+    }
+
+    .navbar {
+        position: fixed;
+        bottom: 0px;
+        height: 40px;
+        padding: 0px !important;
+    }
+
+    .navbar .links {
+        width: 100% !important;
+    }
+    .navbar .links .navbar-nav{
+        display: flex;
+        flex-direction:row !important;
+        flex-grow: 1 !important;
+        justify-content: center;
+    }
+
+    .navbar .links .navbar-nav .nav-item .active{
+        background: #333;
+    }
+    .navbar .links .navbar-nav .nav-item a{
+        display: block;
+        line-height: 30px;
+        list-style-type: none;
+        padding: 10px 15px 10px 15px;
+    }
+    
+    .search-button {
+        display: block;
+        position: fixed;
+        bottom: 1.4lh;
+        left: 50%;
+        transform: translate(-50%, 0);
+        z-index: 100;
+        box-shadow: rgba(0,0,0,.16) 0 3px 6px, rgba(0,0,0,.23) 0 3px 6px;
+    }
+
+    .navbar .links .navbar-nav .nav-item:nth-child(2) {
+        border-left: 1px dashed #666;
+        border-right: 1px dashed #666;
+    }
+
+
+    .navbar .navbar-title {
+        display: none !important;
+    }
+
+    .navbar .links .search-form {
+        display: none;
+        position: absolute !important;
+        bottom: 3lh !important;
+        left: 50%;
+        width: 80%;
+        transform: translate(-50%, 0);
+        background: rgba(0,0,0,0.4);
+        border-radius: 10px;
+        z-index: 105;
+        /*display: none !important;*/
+    }
+    .search-form select {
+        width: 300px;
+    }
+
+    .navbar
     .hero-container.blocks .ticket__movie-episodedata,
     .hero-container.blocks .ticket__movie-completed,
     .hero-container.blocks .ticket__movie-date,
     /*.hero-container.blocks .ticket__movie-title,*/
     /*.hero-container.blocks .ticket__movie-next,*/
-    .hero-container.blocks .ticket__movie-overview, 
+    .hero-container.blocks .ticket__movie-overview,
     .hero-container.blocks .ticket__movie-network{
         display:none;
     }
@@ -76,8 +143,8 @@ body {
     }
 
     .hero-container.blocks .main-container{
-        width: calc(100vw / 5.5);
-        height: calc((100vw / 5.5) * 1.5);
+        max-width: calc(100vw / 3.5);
+        height: calc((100vw / 3.5) * 1.5);
         margin: 1px; 
         border-radius: 5px;
     }
@@ -88,11 +155,6 @@ body {
         overflow: hidden;
         object-fit:cover;
         object-position: top;
-    }
-
-    .main_search {
-        text-align: center;
-        width: 80vw;
     }
 
     .hero-container.blocks .watchlist-ribbon{
@@ -121,7 +183,21 @@ body {
     }
 }
 
-@media only screen and (min-width:501px){
+/* Screens bigger than Mobile */
+@media only screen and (min-width:801px){
+
+    .search-button {
+        display: none;
+    }
+
+    .navbar .links .search-form {
+        display: block;
+    }
+
+    .breadcrumb-nav {
+        height: 40px;
+    }
+
     .hero-container.blocks .ticket__movie-overview {
         display: block;
         position: absolute;
@@ -131,8 +207,9 @@ body {
     }
 
     .hero-container.blocks .main-container{
-        width: var(--cardWidth);
+        /*width: var(--cardWidth);*/
         width: calc( var(--cardWidth) * 0.85 );
+        max-width: calc( var(--cardWidth) * 4 ) ;
         height: var(--cardHeight);
         margin: var(--cardMargin);
         border-radius: 10px;
@@ -151,7 +228,6 @@ body {
         position: absolute;
         z-index: 4;
         color: #000;
-        border-color: #fff;
         background: #fff;
         font-size: .7rem;
         min-width: 1rem;
@@ -241,7 +317,6 @@ body {
         position: absolute;
         margin-top: -2lh;
         color: #000;
-        border-color: #fff;
         background: #fff;
         font-size: .7rem;
         min-width: 1rem;
@@ -258,17 +333,27 @@ body {
         right: 0.5rem;
     }
 
+    .navbar .links {
+        display: flex!important;
+        flex-basis: auto;
+        flex-grow: 1;
+        align-items: center;
+    }
+
+    footer {
+        position: relative;
+        z-index: 99;
+    }
+
 }
 
 #scroll-top-button{
-display: none; /* Hidden by default */
-  position: fixed; /* Fixed/sticky position */
-  bottom: 60px; /* Place the button at the bottom of the page */
-  right: 30px; /* Place the button 30px from the right */
-  z-index: 99; /* Make sure it does not overlap */
-
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed/sticky position */
+    bottom: 60px; /* Place the button at the bottom of the page */
+    right: 30px; /* Place the button 30px from the right */
+    z-index: 99; /* Make sure it does not overlap */
 }
-
 
 /* Select Styles */
 .select2-results__options{
@@ -317,7 +402,6 @@ ul.select2-results__options li:hover{
 }
 
 /* Navbar Styles */
-
 #top-bar-nav {
     transition: all 1s ease-in-out;
     z-index: 99;
@@ -331,15 +415,9 @@ ul.select2-results__options li:hover{
     color: #fff !important;
 }
 
-footer {
-    position: relative;
-    z-index: 99;
-}
 /* Breadcrumbs Styles */
 
-.breadcrumb-nav {
-    height: 40px;
-}
+
 
 .breadcrumb h2  {
     font-size: 20px;
@@ -351,7 +429,6 @@ footer {
 .breadcrumb i:hover {
     color: var(--bs-primary);
 }
-
 
 .hero-container.blocks, .hero-container.rows {
 	margin: auto;
@@ -370,7 +447,6 @@ footer {
 }
 
 /* Cards Blocks Styles */
-
 .hero-container.blocks .main-container {
     overflow:hidden;
     background: #000;

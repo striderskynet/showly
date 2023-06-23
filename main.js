@@ -289,10 +289,9 @@ const createCard = (data, add = false, ret = false) => {
     $(nc).removeClass("d-none");
     $(nc).blur();
     $(nc).attr("id", "show-" + data.id);
-
-    if (cardNum % 10 == 0 && data.backdrop_path) {
-        
-        $(nc).css("width", ( $(".main-container").width() * 3 ) + "px");
+    
+    if (cardNum % 10 == 0 && data.backdrop_path && $(window).width() > 500) {
+        $(nc).css("width", (100 / 3.5) * 5 + "vw" );/*( $(".main-container").width() * 3 ) + "px")*/;
         $('img', nc).attr("src", image_path_500 + data.backdrop_path);
     } else {
         (data.poster_path) ? $('img', nc).attr("src", image_path + data.poster_path) : $('img', nc).attr("src", "./assets/images/default_poster.png");
@@ -514,18 +513,22 @@ $(".breadcrumb h2").click(function (){
 
     $(".hero-container").removeClass("blocks rows");
     $(".hero-container").addClass(toClass);
+})
 
+$(".search-button").click(function(){
+    console.log( $(".search-form"));
+    $(".search-form").toggle();
 })
 
 $(window).scroll(function () {
-    if ($(window).scrollTop() >= ( $(window).height() * 0.5 ) ) {
-        $("#scroll-top-button").fadeIn("slow");
+    let go = false;
+    if ($(window).scrollTop() >= ( $(window).height() * 0.5 ) ) go = true;
+    
+    (go) ?  $("#scroll-top-button").fadeIn("slow") : $("#scroll-top-button").fadeOut("slow");
 
-        $("#top-bar-nav").addClass("position-fixed")
-    } else {
-        $("#scroll-top-button").fadeOut("slow");
-        $("#top-bar-nav").removeClass("position-fixed");
-    }
+    if ($(window).width() <= 500 ) return false;
+
+    (go) ? $("#top-bar-nav").addClass("position-fixed") : $("#top-bar-nav").removeClass("position-fixed")
 });
 
 $("#scroll-top-button").click(function(){
