@@ -103,8 +103,9 @@ function formatShow (show) {
     if (show.loading) return show.text;
 
     let origin_country_div = "";
+    let poster_path_div = "";
     if ( show.origin_country.length != 0) origin_country_div =  `<div class='select2-result-tv network'>(${show.origin_country})</div>`;
-    ( show.poster_path === undefined) ? poster_path_div = "" : poster_path_div =  `<div class='select2-result-tv logo col-md-auto'><img loading='lazy' src='${image_path }${show.poster_path}'/></div>`;
+    if ( show.poster_path !== undefined) poster_path_div =  `<div class='select2-result-tv logo col-md-auto'><img loading='lazy' src='${image_path }${show.poster_path}'/></div>`;
 
     var container = $(
     "<div class='select2-result-shows row' onClick='select_show('>" + 
