@@ -35,6 +35,15 @@ body {
 /* Screen for mobile */
 @media only screen and (max-width:800px){
 
+    #scroll-top-button{
+        display: none; /* Hidden by default */
+        position: fixed; /* Fixed/sticky position */
+        bottom: 4lh; /* Place the button at the bottom of the page */
+        right: 30px; /* Place the button 30px from the right */
+        z-index: 99; /* Make sure it does not overlap */
+    }
+
+
     footer,
     .breadcrumb-nav {
         display: none !important;
@@ -43,18 +52,31 @@ body {
     .navbar {
         position: fixed;
         bottom: 0px;
-        height: 40px;
         padding: 0px !important;
+    }
+
+    .navbar .border-svg{
+        width: 100vw;
+        left: 0px;
+        bottom: 2lh;
+        display: block !important;
+        position: absolute !important;
+    }
+
+    .navbar .border-svg svg path{
+        fill: var(--bs-dark) !important;
     }
 
     .navbar .links {
         width: 100% !important;
     }
+
     .navbar .links .navbar-nav{
         display: flex;
         flex-direction:row !important;
         flex-grow: 1 !important;
         justify-content: center;
+        margin-bottom: 0px !important;
     }
 
     .navbar .links .navbar-nav .nav-item .active{
@@ -70,7 +92,7 @@ body {
     .search-button {
         display: block;
         position: fixed;
-        bottom: 1.4lh;
+        bottom: 2.5lh;
         left: 50%;
         transform: translate(-50%, 0);
         z-index: 100;
@@ -82,7 +104,6 @@ body {
         border-right: 1px dashed #666;
     }
 
-
     .navbar .navbar-title {
         display: none !important;
     }
@@ -90,7 +111,7 @@ body {
     .navbar .links .search-form {
         display: none;
         position: absolute !important;
-        bottom: 3lh !important;
+        bottom: 3.5lh !important;
         left: 50%;
         width: 80%;
         transform: translate(-50%, 0);
@@ -110,6 +131,7 @@ body {
     /*.hero-container.blocks .ticket__movie-title,*/
     /*.hero-container.blocks .ticket__movie-next,*/
     .hero-container.blocks .ticket__movie-overview,
+    .hero-container.blocks .ticket__movie-episodedata,
     .hero-container.blocks .ticket__movie-network{
         display:none;
     }
@@ -185,6 +207,14 @@ body {
 
 /* Screens bigger than Mobile */
 @media only screen and (min-width:801px){
+
+    #scroll-top-button{
+        display: none; /* Hidden by default */
+        position: fixed; /* Fixed/sticky position */
+        bottom: 60px; /* Place the button at the bottom of the page */
+        right: 30px; /* Place the button 30px from the right */
+        z-index: 99; /* Make sure it does not overlap */
+    }
 
     .search-button {
         display: none;
@@ -345,14 +375,6 @@ body {
         z-index: 99;
     }
 
-}
-
-#scroll-top-button{
-    display: none; /* Hidden by default */
-    position: fixed; /* Fixed/sticky position */
-    bottom: 60px; /* Place the button at the bottom of the page */
-    right: 30px; /* Place the button 30px from the right */
-    z-index: 99; /* Make sure it does not overlap */
 }
 
 /* Select Styles */

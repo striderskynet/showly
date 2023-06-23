@@ -1,3 +1,4 @@
+"use strict";
 const export_show_path = "https://www.themoviedb.org/tv/";
 const image_path = "https://image.tmdb.org/t/p/w300_and_h450_bestv2";
 const image_path_500 = "https://image.tmdb.org/t/p/w500";
@@ -204,7 +205,7 @@ async function loadHotShows(reload = false){
         if (!reload) $(".hero-container").html(""), $(window).scroll(infinityScroll);
         response.results.forEach(val => {
             //console.log("Show id: ", val.id, " poster_path: ", val.poster_path);
-            if ( !arr.includes(String(val.id)) /*&& val.poster_path != null*/) createCard(val, true, false);
+            /*if ( !arr.includes(String(val.id)) && val.poster_path != null)*/ createCard(val, true, false);
         })
 
     });
@@ -322,14 +323,17 @@ const createCard = (data, add = false, ret = false) => {
         (data.next_episode_to_air !== null) ? $('.ticket__movie-next', nc).html(daysDiff(data.next_episode_to_air.air_date)) : $('.ticket__movie-next', nc).html("Completed").addClass("bg-primary");
     }
 
-
     tippy($('.share-ribbon', nc)[0], {content: lang[lg]['show_sharetitle']});
     $('.share-ribbon', nc).on("click",function(){shareShow(data.id)});
     $('.ticket__movie-overview', nc).html(data.overview);
     $('.ticket__movie-popularity', nc).html(data.vote_average);
     $('.ticket__movie-title', nc).html(data.name);
-    $('.ticket__movie-date', nc).html(getYearFromDate(data.first_air_date));
+
     (data.number_of_seasons) ? $('.ticket__movie-completed', nc).html(`<strong>${data.number_of_seasons}</strong> ${lang[lg]['show_seasons']}`) : $('.ticket__movie-completed', nc).remove(); 
+
+    let url = window.location.href.split("#");
+    if (!url[1]) url[1] = "";
+    (url[1]) ? $('.ticket__movie-date', nc).html(data.first_air_date) : $('.ticket__movie-date', nc).html(getYearFromDate(data.first_air_date));
 
     if (ret === true) return nc;
 
