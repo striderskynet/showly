@@ -427,7 +427,7 @@ const activeMenu = (url) => {
 
 const noShowsInDatabase = () => {
     toast_config.title = 'Showly';
-    toast_config.message = `You currently have no shows, add shows in the search bar or in the trending/hot categories`;
+    toast_config.message = `You are tracking zero shows right now, add shows by searching for them or in the Trending/Hot sections.`;
 
     iziToast.info(toast_config);
 }
