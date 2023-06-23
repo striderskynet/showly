@@ -78,6 +78,9 @@ body {
         margin-bottom: 0px !important;
     }
 
+    .navbar .links .navbar-nav .nav-item {
+        min-width: 100px;
+    }
     .navbar .links .navbar-nav .nav-item .active{
         background: #333;
         text-decoration: none !important;
@@ -88,6 +91,7 @@ body {
         line-height: 30px;
         list-style-type: none;
         padding: 10px 15px 10px 15px;
+        font-size: 0.8em !important;
     }
     
     .search-button {
