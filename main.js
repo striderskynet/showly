@@ -7,6 +7,7 @@ const storage_name = "showly_database";
 let database = {};
 let showlist = [];
 let page = 1;
+let max_page = 50;
 let cardNum = 1;
 
 let active_sorting = "popularity.desc";
@@ -154,6 +155,7 @@ const loadTrendingShows = async (reload = false) => {
     .then(async response => {
         database = await loadShowsfromDB(false);
 
+        max_page = response.total_pages;
         const arr = [];
         Object.values(database).forEach(el => {
             arr.push(el);
@@ -190,6 +192,8 @@ async function loadHotShows(reload = false){
     fetch(uri, tmdb_options)
     .then(response => response.json())
     .then(async response => {
+        
+        max_page = response.total_pages;
         database = await loadShowsfromDB(false);
 
         const arr = [];
@@ -200,7 +204,7 @@ async function loadHotShows(reload = false){
         if (!reload) $(".hero-container").html(""), $(window).scroll(infinityScroll);
         response.results.forEach(val => {
             //console.log("Show id: ", val.id, " poster_path: ", val.poster_path);
-            if ( !arr.includes(String(val.id)) && val.poster_path != null) createCard(val, true, false);
+            if ( !arr.includes(String(val.id)) /*&& val.poster_path != null*/) createCard(val, true, false);
         })
 
     });
@@ -239,7 +243,7 @@ const displayShows = async (data) => {
 const infinityScroll = () => {
     
     if ($(window).scrollTop() >= $(document).height() - ($(window).height() * 2)) {
-        if (page <= 50) {
+        if (page <= max_page) {
             page += 1;
             
             let url = window.location.href.split("#");
