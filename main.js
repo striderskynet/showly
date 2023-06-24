@@ -94,7 +94,7 @@ $("#main_search").select2({
         },
     
         placeholder: lang[lg]['search_placeholder'],
-        minimumInputLength: 5,
+        minimumInputLength: 3,
             templateResult: formatShow,
             //templateSelection: formatRepoSelection,
         });
